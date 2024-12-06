@@ -2,6 +2,7 @@
 
 // Initially hide all sections except #quoteWhat
 $('.form-section').hide();
+$('#quoteDetails').hide(); // Explicitly hide quoteDetails
 $('#quoteWhat').show();
 
 // Function to toggle required attributes and clear hidden inputs
@@ -30,142 +31,46 @@ function areRequiredFieldsValid(sectionId) {
     return isValid;
 }
 
-// Function to scroll to the next section using GSAP
-function scrollToNextSection(sectionId) {
-    const container = document.querySelector('.form-block'); // Scrollable container
-    const target = document.querySelector(`#${sectionId}`); // Target section
-
-    if (container && target) {
-        const containerRect = container.getBoundingClientRect();
-        const targetRect = target.getBoundingClientRect();
-
-        // Calculate scroll position relative to the container
-        const scrollOffset = targetRect.top - containerRect.top + container.scrollTop;
-
-        // Scroll the container to the target
-        gsap.to(container, {
-            scrollTop: scrollOffset - 20, // Adjust offset if necessary
-            duration: 1.8,
-            ease: 'power3.out',
-        });
-    }
-}
-
-// Function to handle displaying sections based on #quoteWhat input
-function handleQuoteWhat() {
-    const selectedValue = $('input[name="what-to-quote"]:checked').attr('id');
-
-    // Hide all sections except #quoteWhat
-    $('.form-section').hide();
-    $('#quoteWhat').show();
-
-    // Show the appropriate section based on selection
-    switch (selectedValue) {
-        case 'whatRental':
-        case 'whatBuyNew':
-        case 'whatBuyUsed':
-        case 'whatBuyNewUsed':
-            $('#quoteRentBuy').show();
-            scrollToNextSection('quoteRentBuy');
-            break;
-
-        case 'whatPartsService':
-            $('#quotePartsService').show();
-            scrollToNextSection('quotePartsService');
-            break;
-
-        case 'whatTraining':
-            $('#quoteTraining').show();
-            scrollToNextSection('quoteTraining');
-            break;
-
-        default:
-            break;
-    }
-
-    toggleRequiredAttributes();
-}
-
-// Function to handle the "Do you know what you need?" section
-function handleQuoteRentBuy() {
-    const selectedNeed = $('input[name="what-you-need"]:checked').attr('id');
-
-    if (selectedNeed === 'iKnowHWhatINeed') {
-        // Show #quoteKnow directly
-        $('#quoteMoving, #quoteLocation, #quoteMaxHeight, #quoteMaxWeight').hide();
-        $('#quoteKnow').show();
-        scrollToNextSection('quoteKnow');
-    } else if (selectedNeed === 'helpMeChoose') {
-        // Show "Help Me Choose" steps sequentially
-        $('#quoteKnow').hide();
-        $('#quoteMoving').show();
-        scrollToNextSection('quoteMoving');
-
-        $('#quoteMoving input').on('change', function () {
-            $('#quoteLocation').show();
-            scrollToNextSection('quoteLocation');
-
-            $('#quoteLocation input').on('change', function () {
-                $('#quoteMaxHeight').show();
-                scrollToNextSection('quoteMaxHeight');
-
-                $('#quoteMaxHeight input').on('change', function () {
-                    $('#quoteMaxWeight').show();
-                    scrollToNextSection('quoteMaxWeight');
-                });
-            });
-        });
-    }
-
-    toggleRequiredAttributes();
-}
-
-// Function to handle training course selection
-function handleGroupTrainingSelection() {
-    if ($('input[name="groupTraining"]:checked').length > 0) {
-        $('#quoteBranch').show();
-        scrollToNextSection('quoteBranch');
-    } else {
-        $('#quoteBranch').hide();
-        $('#quoteDetails').hide();
-        $('#quoteSubmit').hide();
-    }
-
-    toggleRequiredAttributes();
-}
-
 // Function to handle showing final sections
 function handleFinalSteps() {
-    if (areRequiredFieldsValid('quoteBranch')) {
-        $('#quoteDetails').show();
-        scrollToNextSection('quoteDetails');
+    const isBranchValid = areRequiredFieldsValid('quoteBranch');
+    const isDetailsValid = areRequiredFieldsValid('quoteDetails');
+
+    // Debugging logs for validation
+    console.log("Branch valid:", isBranchValid);
+    console.log("Details visible:", $('#quoteDetails').is(':visible'));
+    console.log("Details valid:", isDetailsValid);
+
+    // Show or hide #quoteDetails based on validation
+    if (isBranchValid) {
+        $('#quoteDetails').show(); // Ensure #quoteDetails is visible
     } else {
-        $('#quoteDetails').hide();
-        $('#quoteSubmit').hide();
+        $('#quoteDetails').hide(); // Hide #quoteDetails if branch is invalid
+        $('#quoteSubmit').hide(); // Also hide submit button
+        return; // Exit early if branch is invalid
     }
 
-    if (areRequiredFieldsValid('quoteDetails')) {
-        $('#quoteSubmit').show();
-        scrollToNextSection('quoteSubmit');
+    // Show or hide submit button based on #quoteDetails validation
+    if (isDetailsValid) {
+        $('#quoteSubmit').show(); // Show submit button
     } else {
-        $('#quoteSubmit').hide();
+        $('#quoteSubmit').hide(); // Hide submit button
     }
 
+    // Update required attributes dynamically
     toggleRequiredAttributes();
 }
 
-// Attach event listeners for #quoteWhat
+// Event listeners for dynamic validation
+$('#quoteBranch input, #quoteBranch select, #quoteBranch textarea').on('change', handleFinalSteps);
+$('#quoteDetails input, #quoteDetails select, #quoteDetails textarea').on('focusout change', function () {
+    handleFinalSteps();
+});
+
+// Attach other event listeners and initializations
 $('input[name="what-to-quote"]').on('change', handleQuoteWhat);
-
-// Attach event listeners for #quoteRentBuy
 $('input[name="what-you-need"]').on('change', handleQuoteRentBuy);
-
-// Attach event listeners for training course selection
 $('input[name="groupTraining"]').on('change', handleGroupTrainingSelection);
-
-// Attach event listeners for #quoteBranch and #quoteDetails validation
-$('#quoteBranch input, #quoteBranch select, #quoteBranch textarea').on('change keyup', handleFinalSteps);
-$('#quoteDetails input, #quoteDetails select, #quoteDetails textarea').on('change keyup', handleFinalSteps);
 
 // Initial setup
 toggleRequiredAttributes();
@@ -175,27 +80,30 @@ toggleRequiredAttributes();
 
 // Open Quote Modal
 $('.quote-trigger').on('click', function () {
-    gsap.to('.quote-modal', {
-        autoAlpha: 1, // Ensures both visibility and opacity are set
+    const $modal = $('.quote-modal');
+    gsap.to($modal, {
+        autoAlpha: 1, // Ensures visibility and opacity are set
         duration: 0.4,
         ease: 'power3.out',
         onStart: function () {
-            $('.quote-modal').css('display', 'flex'); // Ensure modal is visible
+            $modal.css('display', 'flex'); // Ensure modal is visible
         }
     });
-    $('body').addClass('no-scroll'); // Disable scrolling on the body
+    $('body').addClass('no-scroll'); // Disable body scroll
 });
+
 // Close Quote Modal
 $('.quote-close, .quote-bg').on('click', function () {
-    gsap.to('.quote-modal', {
-        autoAlpha: 0, // Ensures both visibility and opacity are set
+    const $modal = $('.quote-modal');
+    gsap.to($modal, {
+        autoAlpha: 0, // Ensures visibility and opacity are set
         duration: 0.4,
         ease: 'power3.in',
         onComplete: function () {
-            $('.quote-modal').css('display', 'none'); // Hide modal after animation
+            $modal.css('display', 'none'); // Hide modal after animation
         }
     });
-    $('body').removeClass('no-scroll'); // Re-enable scrolling on the body
+    $('body').removeClass('no-scroll'); // Re-enable body scroll
 });
 
 // FORM BEHAVIOUR
@@ -226,15 +134,17 @@ $('input[type="radio"]').on('change', function () {
     });
 });
 
-// if .text-field and textarea Behaviour
+// Text fiels behavior
+
+// Initial setup: remove active class from all text fields and labels on page load
+$('.text-field, .textarea').removeClass('active').siblings('.field-label').removeClass('active');
+// Focus event: add active class to the field and its label
 $('.text-field, .textarea').on('focus', function () {
-    $(this).siblings('.field-label').addClass('active'); // Use siblings to target the label
-    $(this).addClass('active');
+    $(this).addClass('active').siblings('.field-label').addClass('active');
 });
-// if .text-field gets blurred, remove .active class from .field-label and sibling .text-field
+// Blur event: remove active class if the field is empty
 $('.text-field, .textarea').on('blur', function () {
     if ($(this).val().trim() === '') {
-        $(this).siblings('.field-label').removeClass('active'); // Use siblings to target the label
-        $(this).removeClass('active');
+        $(this).removeClass('active').siblings('.field-label').removeClass('active');
     }
 });
