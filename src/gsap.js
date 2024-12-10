@@ -68,8 +68,7 @@ window.Webflow.push(() => {
     });
 
     // GSAP script to sequentially slide in .grid-1, .grid-2, and .grid-4
-    const grids = gsap.utils.toArray('.grid-1, .grid-2, .grid-4, .footer_1_wrap');
-    console.log(grids); // Debug: check elements
+    const grids = gsap.utils.toArray('.grid-1, .grid-2, .grid-4, .footer_1_contain, .footer_1_bottom_wrap');
 
     gsap.fromTo(
         grids,

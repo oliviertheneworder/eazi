@@ -1,25 +1,109 @@
-// Country-Specific Content Example HTML
-// <div data-country="South Africa">Content for South Africa (e.g., Rent and Sale)</div>
-// <div data-country="Botswana">Content for Botswana (e.g., Rent only)</div>
-// <div data-country="Mozambique">Content for Mozambique</div>
-// <div data-country="Namibia">Content for Namibia</div>
-// <div data-country="Zimbabwe">Content for Zimbabwe</div>
-// <div data-country="Zambia">Content for Zambia</div>
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("JavaScript is running!");
 
+    // Locate modal and its buttons
+    const modal = document.querySelector(".country-modal");
+    const modalButtons = document.querySelectorAll(".button-country");
+
+    // Locate navigation dropdown
+    const dropdownContainer = document.querySelector(".country-list");
+    if (dropdownContainer) {
+        console.log("Navigation dropdown found:", dropdownContainer);
+
+        // Add click listener for navigation dropdown
+        dropdownContainer.addEventListener("click", (event) => {
+            const clickedLink = event.target.closest(".nav_dropdown_link");
+            if (clickedLink) {
+                const countryElement = clickedLink.querySelector(".country");
+                const shortNameElement = clickedLink.querySelector(".country-short");
+                const flagElement = clickedLink.querySelector("img");
+
+                if (countryElement && shortNameElement && flagElement) {
+                    const country = countryElement.textContent.trim();
+                    const shortName = shortNameElement.textContent.trim();
+                    const flagUrl = flagElement.src;
+
+                    console.log(`Dropdown Country: ${country}, Short Name: ${shortName}, Flag URL: ${flagUrl}`);
+                    selectCountry(country, shortName, flagUrl);
+                }
+            }
+        });
+    } else {
+        console.error("Navigation dropdown '.country-list' not found.");
+    }
+
+    // Check cookies for previously selected country
+    const chosenCountry = getCookie("selectedCountry");
+    const chosenShortName = getCookie("selectedCountryShort");
+    const chosenFlagUrl = getCookie("selectedCountryFlag");
+
+    if (!chosenCountry || !chosenShortName || !chosenFlagUrl) {
+        console.log("No country selection found in cookies. Showing modal.");
+        showModal(modal);
+
+        // Add click listeners for modal buttons
+        modalButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const country = button.textContent.trim();
+
+                // Get short name and flag from navigation dropdown
+                const matchingDropdownItem = [...dropdownContainer.querySelectorAll(".nav_dropdown_item")].find(
+                    (item) => item.querySelector(".country")?.textContent.trim() === country
+                );
+
+                if (matchingDropdownItem) {
+                    const shortName = matchingDropdownItem.querySelector(".country-short").textContent.trim();
+                    const flagUrl = matchingDropdownItem.querySelector("img").src;
+
+                    console.log(`Modal Country: ${country}, Short Name: ${shortName}, Flag URL: ${flagUrl}`);
+                    selectCountry(country, shortName, flagUrl);
+                    hideModal(modal);
+                } else {
+                    console.error(`Dropdown item for ${country} not found.`);
+                }
+            });
+        });
+    } else {
+        console.log("Country already selected. Updating navigation.");
+        updateSelectedCountry(chosenCountry, chosenShortName, chosenFlagUrl);
+    }
+});
+
+// Function to show the modal
+function showModal(modal) {
+    if (modal) {
+        modal.style.display = "flex";
+        document.body.classList.add("no-scroll");
+        console.log("Modal displayed.");
+    } else {
+        console.error("Modal element not found.");
+    }
+}
+
+// Function to hide the modal
+function hideModal(modal) {
+    if (modal) {
+        modal.style.display = "none";
+        document.body.classList.remove("no-scroll");
+        console.log("Modal hidden.");
+    } else {
+        console.error("Modal element not found.");
+    }
+}
 
 // Function to set a cookie
 function setCookie(name, value, days) {
     const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     const expires = "expires=" + date.toUTCString();
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    console.log(`Cookie set: ${name}=${value}`); // Log cookie for debugging
+    console.log(`Cookie set: ${name}=${value}`);
 }
 
 // Function to get a cookie
 function getCookie(name) {
     const nameEQ = name + "=";
-    const cookies = document.cookie.split(';');
+    const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
         let cookie = cookies[i].trim();
         if (cookie.indexOf(nameEQ) === 0) return cookie.substring(nameEQ.length, cookie.length);
@@ -28,67 +112,31 @@ function getCookie(name) {
 }
 
 // Function to handle country selection
-function selectCountry(country) {
-    console.log(`Country selected: ${country}`); // Log selected country
-    setCookie('selectedCountry', country, 365); // Set cookie for 1 year
-    updateNav(country);
-    hideModal();
+function selectCountry(country, shortName, flagUrl) {
+    console.log(`Country selected: ${country}`);
+    console.log(`Short name: ${shortName}`);
+    console.log(`Flag URL: ${flagUrl}`);
+
+    setCookie("selectedCountry", country, 365);
+    setCookie("selectedCountryShort", shortName, 365);
+    setCookie("selectedCountryFlag", flagUrl, 365);
+    updateSelectedCountry(country, shortName, flagUrl);
 }
 
-// Function to update navigation with the selected country
-function updateNav(country) {
-    const navElement = document.querySelector('.selected-country');
-    if (navElement) {
-        navElement.textContent = country; // Update nav with selected country
-        console.log(`Navigation updated: ${country}`); // Log nav update
+// Function to update navigation and dropdown with the selected country
+function updateSelectedCountry(country, shortName, flagUrl) {
+    const navShortName = document.querySelector(".short-chosen");
+    const navFlag = document.querySelector(".flag-chosen");
+    if (navShortName) {
+        navShortName.textContent = shortName;
+        console.log(`Navigation short name updated to: ${shortName}`);
     } else {
-        console.warn('Navigation element not found.');
+        console.error("Element with class 'short-chosen' not found.");
+    }
+    if (navFlag) {
+        navFlag.src = flagUrl;
+        console.log(`Navigation flag updated to: ${flagUrl}`);
+    } else {
+        console.error("Element with class 'flag-chosen' not found.");
     }
 }
-
-// Function to show the modal and prevent scrolling
-function showModal() {
-    const modal = document.querySelector('.country-modal');
-    if (modal) {
-        modal.style.display = 'flex';
-        document.body.classList.add('no-scroll'); // Prevent scrolling
-        console.log('Modal displayed.');
-    } else {
-        console.error('Modal element not found.');
-    }
-}
-
-// Function to hide the modal and restore scrolling
-function hideModal() {
-    const modal = document.querySelector('.country-modal');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.classList.remove('no-scroll'); // Restore scrolling
-        console.log('Modal hidden.');
-    } else {
-        console.error('Modal element not found.');
-    }
-}
-
-// Check if country is already chosen
-document.addEventListener('DOMContentLoaded', () => {
-    const chosenCountry = getCookie('selectedCountry');
-    if (chosenCountry) {
-        updateNav(chosenCountry);
-    } else {
-        showModal();
-    }
-
-    // Attach event listeners to country buttons
-    const countryButtons = document.querySelectorAll('.button-country');
-    countryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const country = button.textContent.trim(); // Use button text as country name
-            if (country) {
-                selectCountry(country);
-            } else {
-                console.error('Country name is missing.');
-            }
-        });
-    });
-});

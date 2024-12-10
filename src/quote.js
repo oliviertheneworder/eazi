@@ -2,8 +2,21 @@
 
 // Initially hide all sections except #quoteWhat
 $('.form-section').hide();
-$('#quoteDetails').hide(); // Explicitly hide quoteDetails
 $('#quoteWhat').show();
+
+// Monitor changes to the relevant fields
+$('#Machine-Name, #partsServiceRequirements, #trainingCourses').on('input change', function () {
+    const machineNameValue = $('#Machine-Name').val();
+    const partsServiceValue = $('#partsServiceRequirements').val();
+    const trainingCoursesValue = $('#trainingCourses').val();
+
+    // Check if any field has a value
+    if (machineNameValue || partsServiceValue || trainingCoursesValue) {
+        $('#quoteBranch').show(); // Show the #quoteBranch section
+    } else {
+        $('#quoteBranch').hide(); // Hide the #quoteBranch section if no values
+    }
+});
 
 // Function to toggle required attributes and clear hidden inputs
 function toggleRequiredAttributes() {
@@ -19,58 +32,143 @@ function toggleRequiredAttributes() {
     });
 }
 
-// Function to validate all required fields in a specific section
+// Function to scroll to the next section using GSAP
+function scrollToNextSection(sectionId) {
+    const container = $('.form-block')[0]; // Scrollable container
+    const target = $(`#${sectionId}`)[0]; // Target section
+
+    if (container && target) {
+        const scrollOffset = target.offsetTop - container.offsetTop;
+        gsap.to(container, {
+            scrollTop: scrollOffset - 20, // Adjust offset if necessary
+            duration: 1.8,
+            ease: 'power3.out',
+        });
+    }
+}
+
+// Function to handle displaying sections based on #quoteWhat input
+function handleQuoteWhat() {
+    const selectedValue = $('input[name="what-to-quote"]:checked').attr('id');
+
+    $('.form-section').hide();
+    $('#quoteWhat').show();
+
+    switch (selectedValue) {
+        case 'chooseRental':
+        case 'chooseNew':
+        case 'chooseUsed':
+        case 'chooseNewUsed':
+            $('#quoteRentBuy').show();
+            scrollToNextSection('quoteRentBuy');
+            break;
+
+        case 'choosePartsService':
+            $('#quotePartsService').show();
+            scrollToNextSection('quotePartsService');
+            break;
+
+        case 'chooseTraining':
+            $('#quoteTraining').show();
+            scrollToNextSection('quoteTraining');
+            break;
+
+        default:
+            break;
+    }
+
+    toggleRequiredAttributes();
+}
+
+// Function to handle the "Do you know what you need?" section
+function handleQuoteRentBuy() {
+    const selectedNeed = $('input[name="what-you-need"]:checked').attr('id');
+
+    if (selectedNeed === 'iKnowHWhatINeed') {
+        $('#quoteMoving, #quoteLocation, #quoteMaxHeight, #quoteMaxWeight').hide();
+        $('#quoteKnow').show();
+        scrollToNextSection('quoteKnow');
+    } else if (selectedNeed === 'helpMeChoose') {
+        $('#quoteKnow').hide();
+        $('#quoteMoving').show();
+        scrollToNextSection('quoteMoving');
+
+        $('#quoteMoving input').on('change', function () {
+            $('#quoteLocation').show();
+            scrollToNextSection('quoteLocation');
+
+            $('#quoteLocation input').on('change', function () {
+                $('#quoteMaxHeight').show();
+                scrollToNextSection('quoteMaxHeight');
+
+                $('#quoteMaxHeight input').on('change', function () {
+                    $('#quoteMaxWeight').show();
+                    scrollToNextSection('quoteMaxWeight');
+
+                    $('#quoteMaxWeight input').on('change', function () {
+                        $('#quoteBranch').show();
+                        scrollToNextSection('quoteBranch');
+                    });
+                });
+            });
+        });
+    }
+
+    toggleRequiredAttributes();
+}
+
+// Function to handle training course selection
+function handleGroupTrainingSelection() {
+    if ($('input[name="groupTraining"]:checked').length > 0) {
+        $('#quoteBranch').show();
+        scrollToNextSection('quoteBranch');
+    } else {
+        $('#quoteBranch, #quoteDetails, #quoteSubmit').hide();
+    }
+
+    toggleRequiredAttributes();
+}
+
+// Function to handle final steps
+function handleFinalSteps() {
+    const isBranchValid = areRequiredFieldsValid('quoteBranch');
+    if (isBranchValid) {
+        $('#quoteDetails').show();
+        scrollToNextSection('quoteDetails');
+    } else {
+        $('#quoteDetails, #quoteSubmit').hide();
+        return;
+    }
+
+    const isDetailsValid = areRequiredFieldsValid('quoteDetails');
+    if (isDetailsValid) {
+        $('#quoteSubmit').show();
+        scrollToNextSection('quoteSubmit');
+    } else {
+        $('#quoteSubmit').hide();
+    }
+
+    toggleRequiredAttributes();
+}
+
+// Function to validate required fields in a specific section
 function areRequiredFieldsValid(sectionId) {
     let isValid = true;
     $(`#${sectionId}`).find('input[required], textarea[required], select[required]').each(function () {
         if (!$(this).val() || ($(this).attr('type') === 'radio' && !$(`input[name="${$(this).attr('name')}"]:checked`).length)) {
             isValid = false;
-            return false; // Break loop if a required field is invalid
+            return false; // Exit loop if a required field is invalid
         }
     });
     return isValid;
 }
 
-// Function to handle showing final sections
-function handleFinalSteps() {
-    const isBranchValid = areRequiredFieldsValid('quoteBranch');
-    const isDetailsValid = areRequiredFieldsValid('quoteDetails');
-
-    // Debugging logs for validation
-    console.log("Branch valid:", isBranchValid);
-    console.log("Details visible:", $('#quoteDetails').is(':visible'));
-    console.log("Details valid:", isDetailsValid);
-
-    // Show or hide #quoteDetails based on validation
-    if (isBranchValid) {
-        $('#quoteDetails').show(); // Ensure #quoteDetails is visible
-    } else {
-        $('#quoteDetails').hide(); // Hide #quoteDetails if branch is invalid
-        $('#quoteSubmit').hide(); // Also hide submit button
-        return; // Exit early if branch is invalid
-    }
-
-    // Show or hide submit button based on #quoteDetails validation
-    if (isDetailsValid) {
-        $('#quoteSubmit').show(); // Show submit button
-    } else {
-        $('#quoteSubmit').hide(); // Hide submit button
-    }
-
-    // Update required attributes dynamically
-    toggleRequiredAttributes();
-}
-
-// Event listeners for dynamic validation
-$('#quoteBranch input, #quoteBranch select, #quoteBranch textarea').on('change', handleFinalSteps);
-$('#quoteDetails input, #quoteDetails select, #quoteDetails textarea').on('focusout change', function () {
-    handleFinalSteps();
-});
-
-// Attach other event listeners and initializations
+// Event listeners
 $('input[name="what-to-quote"]').on('change', handleQuoteWhat);
 $('input[name="what-you-need"]').on('change', handleQuoteRentBuy);
 $('input[name="groupTraining"]').on('change', handleGroupTrainingSelection);
+$('#quoteBranch input, #quoteBranch select, #quoteBranch textarea').on('change keyup', handleFinalSteps);
+$('#quoteDetails input, #quoteDetails select, #quoteDetails textarea').on('change keyup', handleFinalSteps);
 
 // Initial setup
 toggleRequiredAttributes();
@@ -80,30 +178,27 @@ toggleRequiredAttributes();
 
 // Open Quote Modal
 $('.quote-trigger').on('click', function () {
-    const $modal = $('.quote-modal');
-    gsap.to($modal, {
-        autoAlpha: 1, // Ensures visibility and opacity are set
+    gsap.to('.quote-modal', {
+        autoAlpha: 1, // Ensures both visibility and opacity are set
         duration: 0.4,
         ease: 'power3.out',
         onStart: function () {
-            $modal.css('display', 'flex'); // Ensure modal is visible
+            $('.quote-modal').css('display', 'flex'); // Ensure modal is visible
         }
     });
-    $('body').addClass('no-scroll'); // Disable body scroll
+    $('body').addClass('no-scroll'); // Disable scrolling on the body
 });
-
 // Close Quote Modal
 $('.quote-close, .quote-bg').on('click', function () {
-    const $modal = $('.quote-modal');
-    gsap.to($modal, {
-        autoAlpha: 0, // Ensures visibility and opacity are set
+    gsap.to('.quote-modal', {
+        autoAlpha: 0, // Ensures both visibility and opacity are set
         duration: 0.4,
         ease: 'power3.in',
         onComplete: function () {
-            $modal.css('display', 'none'); // Hide modal after animation
+            $('.quote-modal').css('display', 'none'); // Hide modal after animation
         }
     });
-    $('body').removeClass('no-scroll'); // Re-enable body scroll
+    $('body').removeClass('no-scroll'); // Re-enable scrolling on the body
 });
 
 // FORM BEHAVIOUR
@@ -133,6 +228,8 @@ $('input[type="radio"]').on('change', function () {
         }
     });
 });
+
+
 
 // Text fiels behavior
 
