@@ -54,16 +54,28 @@ const categoryMapping = {
     "Very Narrow Aisle Trucks": ["power-unit", "load-capacity", "load-centre", "overall-width", "lift-hight"]
 };
 
-// Extract the category from the `data-category` attribute
-const category = $(".key-spec-list").attr("data-category");
+// Iterate through each `.key-spec-list` that has a `data-category`
+$(".key-spec-list[data-category]").each(function () {
+    const $list = $(this);
 
-// Get the metrics for the category
-const visibleMetrics = categoryMapping[category] || [];
+    // Get the `data-category` attribute of the current list
+    const category = $list.attr("data-category");
 
-// Hide all metrics by default
-$(".key-spec-list > div").hide();
+    // Get the metrics for the category
+    const visibleMetrics = categoryMapping[category] || [];
 
-// Show only the relevant metrics
-visibleMetrics.forEach(metric => {
-    $(`.${metric}`).show();
+    // Loop through each child `div` and determine visibility
+    $list.children("div").each(function () {
+        const $item = $(this);
+
+        // Check if the `div` has a class that matches the visible metrics
+        const hasVisibleMetric = visibleMetrics.some(metric => $item.hasClass(metric));
+
+        // Toggle visibility based on whether the class is in the visible metrics
+        if (hasVisibleMetric || !$item.attr("class")) {
+            $item.show();
+        } else {
+            $item.hide();
+        }
+    });
 });
