@@ -1,3 +1,5 @@
+console.log("Country.js loaded");
+
 document.addEventListener("DOMContentLoaded", () => {
     console.log("JavaScript is running!");
 
