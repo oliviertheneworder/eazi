@@ -1,75 +1,72 @@
-console.log("Country.js loaded");
+// console.log("Country.js loaded");
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("JavaScript is running!");
+// Locate modal and its buttons
+const modal = document.querySelector(".country-modal");
+const modalButtons = document.querySelectorAll(".button-country");
 
-    // Locate modal and its buttons
-    const modal = document.querySelector(".country-modal");
-    const modalButtons = document.querySelectorAll(".button-country");
+// Locate navigation dropdown
+const dropdownContainer = document.querySelector(".country-list");
+if (dropdownContainer) {
+    console.log("Navigation dropdown found:", dropdownContainer);
 
-    // Locate navigation dropdown
-    const dropdownContainer = document.querySelector(".country-list");
-    if (dropdownContainer) {
-        console.log("Navigation dropdown found:", dropdownContainer);
+    // Add click listener for navigation dropdown
+    dropdownContainer.addEventListener("click", (event) => {
+        const clickedLink = event.target.closest(".nav_dropdown_link");
+        if (clickedLink) {
+            const countryElement = clickedLink.querySelector(".country");
+            const shortNameElement = clickedLink.querySelector(".country-short");
+            const flagElement = clickedLink.querySelector("img");
 
-        // Add click listener for navigation dropdown
-        dropdownContainer.addEventListener("click", (event) => {
-            const clickedLink = event.target.closest(".nav_dropdown_link");
-            if (clickedLink) {
-                const countryElement = clickedLink.querySelector(".country");
-                const shortNameElement = clickedLink.querySelector(".country-short");
-                const flagElement = clickedLink.querySelector("img");
+            if (countryElement && shortNameElement && flagElement) {
+                const country = countryElement.textContent.trim();
+                const shortName = shortNameElement.textContent.trim();
+                const flagUrl = flagElement.src;
 
-                if (countryElement && shortNameElement && flagElement) {
-                    const country = countryElement.textContent.trim();
-                    const shortName = shortNameElement.textContent.trim();
-                    const flagUrl = flagElement.src;
+                // console.log(`Dropdown Country: ${country}, Short Name: ${shortName}, Flag URL: ${flagUrl}`);
+                selectCountry(country, shortName, flagUrl);
+            }
+        }
+    });
+} else {
+    console.error("Navigation dropdown '.country-list' not found.");
+}
 
-                    console.log(`Dropdown Country: ${country}, Short Name: ${shortName}, Flag URL: ${flagUrl}`);
-                    selectCountry(country, shortName, flagUrl);
-                }
+// Check cookies for previously selected country
+const chosenCountry = getCookie("selectedCountry");
+const chosenShortName = getCookie("selectedCountryShort");
+const chosenFlagUrl = getCookie("selectedCountryFlag");
+
+if (!chosenCountry || !chosenShortName || !chosenFlagUrl) {
+    console.log("No country selection found in cookies. Showing modal.");
+    showModal(modal);
+
+    // Add click listeners for modal buttons
+    modalButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const country = button.textContent.trim();
+
+            // Get short name and flag from navigation dropdown
+            const matchingDropdownItem = [...dropdownContainer.querySelectorAll(".nav_dropdown_item")].find(
+                (item) => item.querySelector(".country")?.textContent.trim() === country
+            );
+
+            if (matchingDropdownItem) {
+                const shortName = matchingDropdownItem.querySelector(".country-short").textContent.trim();
+                const flagUrl = matchingDropdownItem.querySelector("img").src;
+
+                //console.log(`Modal Country: ${country}, Short Name: ${shortName}, Flag URL: ${flagUrl}`);
+                selectCountry(country, shortName, flagUrl);
+                hideModal(modal);
+            } else {
+                console.error(`Dropdown item for ${country} not found.`);
             }
         });
-    } else {
-        console.error("Navigation dropdown '.country-list' not found.");
-    }
+    });
+} else {
+    console.log("Country already selected. Updating navigation.");
+    updateSelectedCountry(chosenCountry, chosenShortName, chosenFlagUrl);
+}
 
-    // Check cookies for previously selected country
-    const chosenCountry = getCookie("selectedCountry");
-    const chosenShortName = getCookie("selectedCountryShort");
-    const chosenFlagUrl = getCookie("selectedCountryFlag");
-
-    if (!chosenCountry || !chosenShortName || !chosenFlagUrl) {
-        console.log("No country selection found in cookies. Showing modal.");
-        showModal(modal);
-
-        // Add click listeners for modal buttons
-        modalButtons.forEach((button) => {
-            button.addEventListener("click", () => {
-                const country = button.textContent.trim();
-
-                // Get short name and flag from navigation dropdown
-                const matchingDropdownItem = [...dropdownContainer.querySelectorAll(".nav_dropdown_item")].find(
-                    (item) => item.querySelector(".country")?.textContent.trim() === country
-                );
-
-                if (matchingDropdownItem) {
-                    const shortName = matchingDropdownItem.querySelector(".country-short").textContent.trim();
-                    const flagUrl = matchingDropdownItem.querySelector("img").src;
-
-                    console.log(`Modal Country: ${country}, Short Name: ${shortName}, Flag URL: ${flagUrl}`);
-                    selectCountry(country, shortName, flagUrl);
-                    hideModal(modal);
-                } else {
-                    console.error(`Dropdown item for ${country} not found.`);
-                }
-            });
-        });
-    } else {
-        console.log("Country already selected. Updating navigation.");
-        updateSelectedCountry(chosenCountry, chosenShortName, chosenFlagUrl);
-    }
-});
 
 // Function to show the modal
 function showModal(modal) {
@@ -142,3 +139,40 @@ function updateSelectedCountry(country, shortName, flagUrl) {
         console.error("Element with class 'flag-chosen' not found.");
     }
 }
+
+// Country Availability
+
+// Function to update availability for rent or buy based on the selected country
+function updateAvailability(country) {
+    const buttonRentBuy = $(".button-rent-buy");
+    const rentData = buttonRentBuy.find("[data-rent]").attr("data-rent") || "";
+    const saleData = buttonRentBuy.find("[data-sale]").attr("data-sale") || "";
+
+    const rentCountries = rentData.split(",").map((item) => item.trim());
+    const saleCountries = saleData.split(",").map((item) => item.trim());
+
+    const availableForRent = rentCountries.includes(country);
+    const availableForSale = saleCountries.includes(country);
+
+    if (availableForRent && availableForSale) {
+        buttonRentBuy.show().text("Available to Rent / Buy");
+    } else if (availableForRent) {
+        buttonRentBuy.show().text("Available to Rent");
+    } else if (availableForSale) {
+        buttonRentBuy.show().text("Available to Buy");
+    } else {
+        //buttonRentBuy.hide();
+        buttonRentBuy.show().text("Not Available to Rent / Buy in " + country);
+    }
+}
+
+// Initial setup: check selected country and update availability
+
+if (chosenCountry) {
+    updateAvailability(chosenCountry);
+} else {
+    console.log("No country selected. Rent/Buy availability cannot be determined.");
+}
+
+// Example usage: dynamically update availability when the country changes
+// Call updateAvailability(selectedCountry) wherever you handle country selection

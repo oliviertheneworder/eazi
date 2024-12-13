@@ -1,5 +1,11 @@
 // FORM LOGIC
 
+//console.log("quote.js loaded");
+
+const currentUrl = window.location.href;
+$("#currentUrl").val(currentUrl);
+//console.log("currentUrl =", currentUrl);
+
 // Initially hide all sections except #quoteWhat
 $('.form-section').hide();
 $('#quoteWhat').show();
@@ -19,18 +25,18 @@ $('#Machine-Name, #partsServiceRequirements, #trainingCourses').on('input change
 });
 
 // Function to toggle required attributes and clear hidden inputs
-function toggleRequiredAttributes() {
-    $('.form-section').each(function () {
-        if ($(this).is(':visible')) {
-            $(this).find('input, textarea, select').attr('required', true);
-        } else {
-            // Remove required attribute and clear values for hidden sections
-            $(this).find('input, textarea, select').removeAttr('required').val('');
-            $(this).find('input[type="radio"], input[type="checkbox"]').prop('checked', false);
-            $(this).find('select').prop('selectedIndex', 0);
-        }
-    });
-}
+// function toggleRequiredAttributes() {
+//     $('.form-section').each(function () {
+//         if ($(this).is(':visible')) {
+//             $(this).find('input, textarea, select').attr('required', true);
+//         } else {
+//             // Remove required attribute and clear values for hidden sections
+//             $(this).find('input, textarea, select').removeAttr('required').val('');
+//             $(this).find('input[type="radio"], input[type="checkbox"]').prop('checked', false);
+//             $(this).find('select').prop('selectedIndex', 0);
+//         }
+//     });
+// }
 
 // Function to scroll to the next section using GSAP
 function scrollToNextSection(sectionId) {
@@ -77,18 +83,31 @@ function handleQuoteWhat() {
             break;
     }
 
-    toggleRequiredAttributes();
+    //toggleRequiredAttributes();
 }
 
 // Function to handle the "Do you know what you need?" section
 function handleQuoteRentBuy() {
+
     const selectedNeed = $('input[name="what-you-need"]:checked').attr('id');
 
     if (selectedNeed === 'iKnowHWhatINeed') {
-        $('#quoteMoving, #quoteLocation, #quoteMaxHeight, #quoteMaxWeight').hide();
+        // Hide unnecessary sections and show the #quoteKnow section
+        $('#quoteMoving, #quoteLocation, #quoteMaxHeight, #quoteMaxWeight, #quoteDates, #quoteBranch').hide();
+
         $('#quoteKnow').show();
         scrollToNextSection('quoteKnow');
+
+        $('#quoteKnow input').on('change', function () {
+            // if #chooseRental is active
+            if ($('#chooseRental').is(':checked')) {
+                $('#quoteDates').show();
+                scrollToNextSection('quoteDates');
+            }
+        });
+
     } else if (selectedNeed === 'helpMeChoose') {
+        // Show sections sequentially based on input changes
         $('#quoteKnow').hide();
         $('#quoteMoving').show();
         scrollToNextSection('quoteMoving');
@@ -96,25 +115,45 @@ function handleQuoteRentBuy() {
         $('#quoteMoving input').on('change', function () {
             $('#quoteLocation').show();
             scrollToNextSection('quoteLocation');
+        });
 
-            $('#quoteLocation input').on('change', function () {
-                $('#quoteMaxHeight').show();
-                scrollToNextSection('quoteMaxHeight');
+        $('#quoteLocation input').on('change', function () {
+            $('#quoteMaxHeight').show();
+            scrollToNextSection('quoteMaxHeight');
+        });
 
-                $('#quoteMaxHeight input').on('change', function () {
-                    $('#quoteMaxWeight').show();
-                    scrollToNextSection('quoteMaxWeight');
+        $('#quoteMaxHeight input').on('change', function () {
+            $('#quoteMaxWeight').show();
+            scrollToNextSection('quoteMaxWeight');
+        });
 
-                    $('#quoteMaxWeight input').on('change', function () {
-                        $('#quoteBranch').show();
-                        scrollToNextSection('quoteBranch');
-                    });
-                });
+        // if #chooseRental is active
+        if ($('#chooseRental').is(':checked')) {
+
+            $('#quoteMaxWeight input').on('change', function () {
+                $('#quoteDates').show();
+                scrollToNextSection('quoteDates');
             });
+        } else {
+            $('#quoteMaxWeight input').on('change', function () {
+                $('#quoteBranch').show();
+                scrollToNextSection('quoteBranch');
+            });
+        }
+
+        // $('#siteAddress').on('change', function () {
+        //     $('#quoteBranch').show();
+        //     scrollToNextSection('quoteBranch');
+        // });
+        // on #siteAddress keyup
+        $('#siteAddress').on('keyup', function () {
+            $('#quoteBranch').show();
+            scrollToNextSection('quoteBranch');
         });
     }
 
-    toggleRequiredAttributes();
+    // Ensure required attributes are toggled correctly
+    //toggleRequiredAttributes();
 }
 
 // Function to handle training course selection
@@ -126,7 +165,7 @@ function handleGroupTrainingSelection() {
         $('#quoteBranch, #quoteDetails, #quoteSubmit').hide();
     }
 
-    toggleRequiredAttributes();
+    //toggleRequiredAttributes();
 }
 
 // Function to handle final steps
@@ -148,7 +187,7 @@ function handleFinalSteps() {
         $('#quoteSubmit').hide();
     }
 
-    toggleRequiredAttributes();
+    //toggleRequiredAttributes();
 }
 
 // Function to validate required fields in a specific section
@@ -171,7 +210,7 @@ $('#quoteBranch input, #quoteBranch select, #quoteBranch textarea').on('change k
 $('#quoteDetails input, #quoteDetails select, #quoteDetails textarea').on('change keyup', handleFinalSteps);
 
 // Initial setup
-toggleRequiredAttributes();
+//toggleRequiredAttributes();
 
 
 // QUOTE MODAL GSAP
@@ -189,7 +228,7 @@ $('.quote-trigger').on('click', function () {
     $('body').addClass('no-scroll'); // Disable scrolling on the body
 });
 // Close Quote Modal
-$('.quote-close, .quote-bg').on('click', function () {
+$('.quote-close, .quote-bg, .quaote-success').on('click', function () {
     gsap.to('.quote-modal', {
         autoAlpha: 0, // Ensures both visibility and opacity are set
         duration: 0.4,
