@@ -9,7 +9,7 @@ if ($('#homeCareers').children('.w-dyn-empty').length > 0) {
 // for each check if a .drawings-list has one child with class w-dyn-item the only set that one to display to block
 $('.drawings-list').each(function () {
     if ($(this).children('.w-dyn-item').length === 1) {
-        $(this).children('.w-dyn-item').css('display', 'block');
+        $(this).css('display', 'block');
     }
 });
 
