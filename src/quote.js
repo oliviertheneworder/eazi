@@ -88,7 +88,6 @@ function handleQuoteWhat() {
 
 // Function to handle the "Do you know what you need?" section
 function handleQuoteRentBuy() {
-
     const selectedNeed = $('input[name="what-you-need"]:checked').attr('id');
 
     if (selectedNeed === 'iKnowHWhatINeed') {
@@ -127,12 +126,16 @@ function handleQuoteRentBuy() {
             scrollToNextSection('quoteMaxWeight');
         });
 
-        // if #chooseRental is active
-        if ($('#chooseRental').is(':checked')) {
-
+        // if #chooseRental, #chooseNew, or #chooseUsed is active
+        if ($('#chooseRental').is(':checked') || $('#chooseNew').is(':checked') || $('#chooseUsed').is(':checked')) {
             $('#quoteMaxWeight input').on('change', function () {
-                $('#quoteDates').show();
-                scrollToNextSection('quoteDates');
+                $('#quoteKnow').show();
+                scrollToNextSection('quoteKnow');
+            });
+
+            $('#quoteKnow input').on('change', function () {
+                $('#quoteBranch').show();
+                scrollToNextSection('quoteBranch');
             });
         } else {
             $('#quoteMaxWeight input').on('change', function () {
@@ -268,9 +271,7 @@ $('input[type="radio"]').on('change', function () {
     });
 });
 
-
-
-// Text fiels behavior
+// Text fields behavior
 
 // Initial setup: remove active class from all text fields and labels on page load
 $('.text-field, .textarea').removeClass('active').siblings('.field-label').removeClass('active');
