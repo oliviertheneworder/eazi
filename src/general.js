@@ -64,11 +64,11 @@ $(".key-spec-list[data-category]").each(function () {
     // Get the metrics for the category
     const visibleMetrics = categoryMapping[category] || [];
 
-    // Loop through each child `div` and determine visibility
-    $list.children("div").each(function () {
+    // Loop through each child `li` and determine visibility
+    $list.children("li").each(function () {
         const $item = $(this);
 
-        // Check if the `div` has a class that matches the visible metrics
+        // Check if the `li` has a class that matches the visible metrics
         const hasVisibleMetric = visibleMetrics.some(metric => $item.hasClass(metric));
 
         // Toggle visibility based on whether the class is in the visible metrics

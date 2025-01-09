@@ -68,20 +68,27 @@ window.Webflow.push(() => {
     });
 
     // GSAP script to sequentially slide in .grid-1, .grid-2, and .grid-4
-    const grids = gsap.utils.toArray('.grid-1, .grid-2, .grid-4, .footer_1_contain, .footer_1_bottom_wrap');
+    // const grids = gsap.utils.toArray('.grid-1, .grid-2, .grid-4, .footer_1_contain, .footer_1_bottom_wrap');
 
-    gsap.fromTo(
-        grids,
-        {
-            autoAlpha: 0, // Combines opacity and visibility
-            y: 100, // Start below the viewport
-        },
-        {
-            autoAlpha: 1, // Ensures visibility is set to visible
-            y: 0, // Reset position
-            duration: 2,
-            ease: easeType, // Smooth easing
-            stagger: 0.3, // Animates sequentially
-        }
-    );
+    // gsap.fromTo(
+    //     grids,
+    //     {
+    //         autoAlpha: 0, // Combines opacity and visibility
+    //         y: 100, // Start below the viewport
+    //     },
+    //     {
+    //         autoAlpha: 1, // Ensures visibility is set to visible
+    //         y: 0, // Reset position
+    //         duration: 2,
+    //         ease: easeType, // Smooth easing
+    //         stagger: 0.3, // Animates sequentially
+    //     }
+    // );
+    // <style>
+    // .grid-1, .grid-2, .grid-4, .footer_1_contain, .footer_1_bottom_wrap {
+    // opacity: 0; /* Initially hidden */
+    // transform: translateY(50px); /* Matches the animation's start position */
+    // will-change: opacity, transform; /* Optimise for animations */
+    // }
+    // </style>
 });

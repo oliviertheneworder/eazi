@@ -6,6 +6,30 @@ const currentUrl = window.location.href;
 $("#currentUrl").val(currentUrl);
 //console.log("currentUrl =", currentUrl);
 
+// if URL contains /machine/ prepend a radio button to "#quoteRentBuy .fieldset-wrap" with the value of H1 using this template: <label class="radio-button-field w-radio"><input type="radio" name="what-you-need" id="helpMeChoose" data-name="what-you-need" class="w-form-formradioinput radio-button w-radio-input" value="Help Me Choose"><span class="radio-button-label w-form-label" for="helpMeChoose">Help Me Choose</span><div><div class="field-icon" style="translate: none; rotate: none; scale: none; opacity: 1; transform: translate(0px, 0px);"><svg viewBox="0 -960 960 960" fill="currentColor" width="24px" height="24px" class="svg"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"></path></svg></div><div class="field-icon-active" style="translate: none; rotate: none; scale: none; opacity: 0; transform: scale(0, 0);"><svg viewBox="0 -960 960 960" fill="currentColor" width="24px" height="24px" class="svg"><path d="M480-280q83 0 141.5-58.5T680-480q0-83-58.5-141.5T480-680q-83 0-141.5 58.5T280-480q0 83 58.5 141.5T480-280Zm0 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"></path></svg></div></div></label>
+if (currentUrl.includes('/machine/')) {
+    const machineName = $('h1').text();
+    const radioTemplate = `<label class="radio-button-field w-radio">
+        <input type="radio" name="what-you-need" id="machineName" data-name="what-you-need" class="w-form-formradioinput radio-button w-radio-input" value="${machineName}">
+        <span class="radio-button-label w-form-label" for="helpMeChoose">${machineName}</span>
+        <div>
+        <div class="field-icon" style="translate: none; rotate: none; scale: none; opacity: 1; transform: translate(0px, 0px);">
+            <svg viewBox="0 -960 960 960" fill="currentColor" width="24px" height="24px" class="svg">
+            <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"></path>
+            </svg>
+        </div>
+        <div class="field-icon-active" style="translate: none; rotate: none; scale: none; opacity: 0; transform: scale(0, 0);">
+            <svg viewBox="0 -960 960 960" fill="currentColor" width="24px" height="24px" class="svg">
+            <path d="M480-280q83 0 141.5-58.5T680-480q0-83-58.5-141.5T480-680q-83 0-141.5 58.5T280-480q0 83 58.5 141.5T480-280Zm0 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"></path>
+            </svg>
+        </div>
+        </div>
+    </label>`;
+    $('#quoteRentBuy .fieldset-wrap').prepend(radioTemplate);
+    // Use Event Delegation to handle the new radio button
+    $('#quoteRentBuy').on('change', 'input[name="what-you-need"]', handleQuoteRentBuy);
+}
+
 // Initially hide all sections except #quoteWhat
 $('.form-section').hide();
 $('#quoteWhat').show();
@@ -90,7 +114,13 @@ function handleQuoteWhat() {
 function handleQuoteRentBuy() {
     const selectedNeed = $('input[name="what-you-need"]:checked').attr('id');
 
-    if (selectedNeed === 'iKnowHWhatINeed') {
+    if (selectedNeed === 'machineName') {
+        // Hide unnecessary sections and show the #quoteBranch section
+        $('#quoteMoving, #quoteLocation, #quoteMaxHeight, #quoteMaxWeight, #quoteDates, #quoteBranch').hide();
+        $('#quoteBranch').show();
+        scrollToNextSection('quoteBranch');
+
+    } else  if (selectedNeed === 'iKnowHWhatINeed') {
         // Hide unnecessary sections and show the #quoteKnow section
         $('#quoteMoving, #quoteLocation, #quoteMaxHeight, #quoteMaxWeight, #quoteDates, #quoteBranch').hide();
 
