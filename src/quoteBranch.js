@@ -13,9 +13,9 @@ $('.jsonbranch').each(function (index) {
     const rawText = $(this).text().trim(); // Trim whitespace
     try {
         const jsonData = JSON.parse(rawText);
-        if (jsonData && jsonData.branch) {
+        if (jsonData && jsonData.branch && jsonData.name) {
             $('#chooseBranch').append(
-                `<option value="${jsonData.branch}">${jsonData.branch}</option>`
+                `<option value="${jsonData.branch}">${jsonData.name}</option>`
             );
         } else {
             console.warn(`Missing "branch" property (index ${index}):`, jsonData);

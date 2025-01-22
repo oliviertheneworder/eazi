@@ -7,7 +7,7 @@ const modalButtons = document.querySelectorAll(".button-country");
 // Locate navigation dropdown
 const dropdownContainer = document.querySelector(".country-list");
 if (dropdownContainer) {
-    console.log("Navigation dropdown found:", dropdownContainer);
+    //console.log("Navigation dropdown found:", dropdownContainer);
 
     // Add click listener for navigation dropdown
     dropdownContainer.addEventListener("click", (event) => {
@@ -37,7 +37,7 @@ const chosenShortName = getCookie("selectedCountryShort");
 const chosenFlagUrl = getCookie("selectedCountryFlag");
 
 if (!chosenCountry || !chosenShortName || !chosenFlagUrl) {
-    console.log("No country selection found in cookies. Showing modal.");
+    //console.log("No country selection found in cookies. Showing modal.");
     showModal(modal);
 
     // Add click listeners for modal buttons
@@ -63,7 +63,7 @@ if (!chosenCountry || !chosenShortName || !chosenFlagUrl) {
         });
     });
 } else {
-    console.log("Country already selected. Updating navigation.");
+    //console.log("Country already selected. Updating navigation.");
     updateSelectedCountry(chosenCountry, chosenShortName, chosenFlagUrl);
 }
 
@@ -73,7 +73,7 @@ function showModal(modal) {
     if (modal) {
         modal.style.display = "flex";
         document.body.classList.add("no-scroll");
-        console.log("Modal displayed.");
+        //console.log("Modal displayed.");
     } else {
         console.error("Modal element not found.");
     }
@@ -84,7 +84,7 @@ function hideModal(modal) {
     if (modal) {
         modal.style.display = "none";
         document.body.classList.remove("no-scroll");
-        console.log("Modal hidden.");
+        //console.log("Modal hidden.");
     } else {
         console.error("Modal element not found.");
     }
@@ -96,7 +96,7 @@ function setCookie(name, value, days) {
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     const expires = "expires=" + date.toUTCString();
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    console.log(`Cookie set: ${name}=${value}`);
+    //console.log(`Cookie set: ${name}=${value}`);
 }
 
 // Function to get a cookie
@@ -112,9 +112,9 @@ function getCookie(name) {
 
 // Function to handle country selection
 function selectCountry(country, shortName, flagUrl) {
-    console.log(`Country selected: ${country}`);
-    console.log(`Short name: ${shortName}`);
-    console.log(`Flag URL: ${flagUrl}`);
+    //console.log(`Country selected: ${country}`);
+    //console.log(`Short name: ${shortName}`);
+    //console.log(`Flag URL: ${flagUrl}`);
 
     setCookie("selectedCountry", country, 365);
     setCookie("selectedCountryShort", shortName, 365);
@@ -128,13 +128,13 @@ function updateSelectedCountry(country, shortName, flagUrl) {
     const navFlag = document.querySelector(".flag-chosen");
     if (navShortName) {
         navShortName.textContent = shortName;
-        console.log(`Navigation short name updated to: ${shortName}`);
+        //console.log(`Navigation short name updated to: ${shortName}`);
     } else {
         console.error("Element with class 'short-chosen' not found.");
     }
     if (navFlag) {
         navFlag.src = flagUrl;
-        console.log(`Navigation flag updated to: ${flagUrl}`);
+        //console.log(`Navigation flag updated to: ${flagUrl}`);
     } else {
         console.error("Element with class 'flag-chosen' not found.");
     }
@@ -171,7 +171,7 @@ function updateAvailability(country) {
 if (chosenCountry) {
     updateAvailability(chosenCountry);
 } else {
-    console.log("No country selected. Rent/Buy availability cannot be determined.");
+    //console.log("No country selected. Rent/Buy availability cannot be determined.");
 }
 
 // Example usage: dynamically update availability when the country changes

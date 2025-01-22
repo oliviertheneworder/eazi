@@ -3,9 +3,6 @@ window.Webflow ||= [];
 window.Webflow.push(() => {
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-    // Define a reusable easing variable
-    const easeType = "power3.out"; // Change this to any of the options below
-
     /**
      * Available GSAP Easing Options:
      * - "power1.in", "power1.out", "power1.inOut" (slight acceleration and deceleration)
@@ -18,6 +15,9 @@ window.Webflow.push(() => {
      * - "steps(5)" (discrete steps)
      * - "linear" (no easing)
      */
+
+    // Define a reusable easing variable
+    const easeType = "power3.out"; // Change this to any of the options below
 
     // Hide / Show the Nav with buffer at the top
     let lastScrollY = 0;
@@ -73,11 +73,11 @@ window.Webflow.push(() => {
     // gsap.fromTo(
     //     grids,
     //     {
-    //         autoAlpha: 0, // Combines opacity and visibility
+    //         // autoAlpha: 0, // Combines opacity and visibility
     //         y: 100, // Start below the viewport
     //     },
     //     {
-    //         autoAlpha: 1, // Ensures visibility is set to visible
+    //         // autoAlpha: 1, // Ensures visibility is set to visible
     //         y: 0, // Reset position
     //         duration: 2,
     //         ease: easeType, // Smooth easing

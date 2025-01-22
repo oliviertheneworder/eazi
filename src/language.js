@@ -19,4 +19,4 @@ function checkLanguageCookie() {
 
 $(window).on('load', checkLanguageCookie); // Check cookie on page load
 
-console.log('Language script loaded');
+//console.log('Language script loaded');

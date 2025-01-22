@@ -11,8 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     const linkEl = document.createElement("link");
                     linkEl.rel = "prefetch";
                     linkEl.href = href;
+                    linkEl.as = "document"; // Set the appropriate 'as' value
                     document.head.appendChild(linkEl);
-                    console.log(`Preloaded link: ${href}`);
+                    // console.log(`Preloaded link: ${href}`);
                 }
             } else {
                 console.warn("Href attribute is not defined for this link", link);

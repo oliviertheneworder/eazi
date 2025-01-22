@@ -1,5 +1,3 @@
-console.log('General JS file loaded indeed');
-
 // if #homeCareers has any child with .w-dyn-empty then hide #homeCareers
 if ($('#homeCareers').children('.w-dyn-empty').length > 0) {
     $('#homeCareers').hide();
@@ -46,7 +44,7 @@ const categoryMapping = {
     "Reach Trucks": ["power-unit", "load-capacity", "load-centre", "free-lift", "overall-width", "lift-hight"],
     "Rotational Telehandlers": ["horizontal-outreach", "machine-weight", "rated-capacity", "max-lift-capacity-at-full-height-stabilizers-down", "max-lift-capacity-at-maximum-reach-stabilizers-down", "max-lift-height"],
     "Rough Terrain Forklifts": ["machine-weight", "load-capacity", "load-centre", "free-lift"],
-    "Skid Steer: Small Platforms": ["machine-weight", "turning-radius-outside"],
+    "Skid Steer: Small Platforms": ["dump-reach","working-height","machine-weight", "turning-radius-outside"],
     "Telehandlers": ["horizontal-outreach", "machine-weight", "rated-capacity", "max-lift-height"],
     "Telescopic Diesel Boom Lifts": ["working-height", "horizontal-outreach", "working-outreach", "machine-weight", "platform-capacity-unrestricted"],
     "Tow Tractors & Platform Trucks": ["power-unit", "load-capacity", "overall-width"],
@@ -79,3 +77,57 @@ $(".key-spec-list[data-category]").each(function () {
         }
     });
 });
+
+// if .pdf-wrap has no visible childe then hide it
+$('.pdf-wrap').each(function () {
+    if ($(this).children(':visible').length === 0) {
+        $(this).hide();
+    }
+});
+
+// if URL contains 'high-capacity-telehandlers' sort '.grid-4 .w-dyn-item' by it's '.key-spec-text' vale as a number (<div class="key-spec-item"><div class="key-spec-label">Horizontal Outreach</div><div class="key-spec-val"><div class="key-spec-text">5.10</div><div class="key-spec-text unit">m</div></div></div>)
+if (window.location.href.indexOf('high-capacity-telehandlers') > -1) {
+    const items = $('.grid-4 .w-dyn-item');
+    items.sort(function (a, b) {
+        const aVal = parseFloat($(a).find('.horizontal-outreach .key-spec-text').text());
+        const bVal = parseFloat($(b).find('.horizontal-outreach .key-spec-text').text());
+        return bVal - aVal; // Reverse the order
+    });
+    $('.grid-4').html(items);
+    // console.log('High Capacity Telehandlers sorted by Horizontal Outreach');
+}
+
+if (window.location.href.indexOf('rotational-telehandlers') > -1) {
+    const items = $('.grid-4 .w-dyn-item');
+    items.sort(function (a, b) {
+        const aVal = parseFloat($(a).find('.rated-capacity .key-spec-text').text());
+        const bVal = parseFloat($(b).find('.rated-capacity .key-spec-text').text());
+        return bVal - aVal; // Reverse the order
+    });
+    $('.grid-4').html(items);
+    // console.log('Rotational Telehandlers sorted by Rated Capacity');
+}
+
+if (window.location.href.indexOf('rough-terrain-forklifts') > -1) {
+    const items = $('.grid-4 .w-dyn-item');
+    items.sort(function (a, b) {
+        const aVal = parseFloat($(a).find('.load-capacity .key-spec-text').text());
+        const bVal = parseFloat($(b).find('.load-capacity .key-spec-text').text());
+        return bVal - aVal; // Reverse the order
+    });
+    $('.grid-4').html(items);
+    // console.log('Rotational Telehandlers sorted by Rated Capacity');
+}
+
+if (window.location.href.indexOf('skid-steer-small-platforms') > -1) {
+    const items = $('.grid-4 .w-dyn-item');
+    items.sort(function (a, b) {
+        const aVal = parseFloat($(a).find('.working-height .key-spec-text').text());
+        const bVal = parseFloat($(b).find('.working-height .key-spec-text').text());
+        return bVal - aVal; // Reverse the order
+    });
+    $('.grid-4').html(items);
+    // console.log('Rotational Telehandlers sorted by Rated Capacity');
+}
+
+// console.log('General JS file loaded indeed');
