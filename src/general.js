@@ -98,6 +98,18 @@ if (window.location.href.indexOf('high-capacity-telehandlers') > -1) {
     // console.log('High Capacity Telehandlers sorted by Horizontal Outreach');
 }
 
+// Sort for agricultural-telehandlers key specs
+if (window.location.href.indexOf('agricultural-telehandlers') > -1) {
+    const items = $('.grid-4 .w-dyn-item');
+    items.sort(function (a, b) {
+        const aVal = parseFloat($(a).find('.horizontal-outreach .key-spec-text').text());
+        const bVal = parseFloat($(b).find('.horizontal-outreach .key-spec-text').text());
+        return bVal - aVal; // Reverse the order
+    });
+    $('.grid-4').html(items);
+    //console.log('Agricultural Telehandlers sorted by Horizontal Outreach');
+}
+
 if (window.location.href.indexOf('rotational-telehandlers') > -1) {
     const items = $('.grid-4 .w-dyn-item');
     items.sort(function (a, b) {
