@@ -94,7 +94,7 @@ if (window.location.href.indexOf('high-capacity-telehandlers') > -1) {
         return bVal - aVal; // Reverse the order
     });
     $('.grid-4').html(items);
-    // console.log('High Capacity Telehandlers sorted by Horizontal Outreach');
+    console.log('High Capacity Telehandlers sorted by Horizontal Outreach');
 }
 
 if (window.location.href.indexOf('rotational-telehandlers') > -1) {
