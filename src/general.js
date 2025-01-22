@@ -27,7 +27,7 @@ $('.key-spec-text.unit').each(function () {
 
 // Map of category to visible metrics
 const categoryMapping = {
-    "Agricultural Telehandlers": [["horizontal-outreach", "machine-weight", "rated-capacity", "max-lift-capacity-at-full-height-forks", "max-lift-capacity-at-maximum-reach-forks"],
+    "Agricultural Telehandlers": ["horizontal-outreach", "machine-weight", "rated-capacity", "max-lift-capacity-at-full-height-forks", "max-lift-capacity-at-maximum-reach-forks"],
     "Articulated Diesel Boom Lifts": ["working-height", "horizontal-outreach", "working-outreach", "up-over-height", "machine-weight"],
     "Compact Crawlers": ["working-height", "horizontal-outreach", "working-outreach", "machine-weight", "platform-capacity-unrestricted"],
     "Diesel Scissor Lifts": ["working-height", "machine-weight", "platform-capacity-unrestricted", "deck-extension", "turning-radius-inside", "turning-radius-outside"],
