@@ -147,21 +147,17 @@ function handleQuoteRentBuy() {
                 scrollToNextSection('quoteBranch');
             });
         }
-
-        // $('#siteAddress').on('change', function () {
-        //     $('#quoteBranch').show();
-        //     scrollToNextSection('quoteBranch');
-        // });
-        // on #siteAddress keyup
-        $('#siteAddress').on('keyup', function () {
-            $('#quoteBranch').show();
-            scrollToNextSection('quoteBranch');
-        });
     }
 
     // Ensure required attributes are toggled correctly
     //toggleRequiredAttributes();
 }
+
+$('#siteAddress').on('focus', function () {
+    $('#quoteBranch').show();
+    scrollToNextSection('quoteBranch');
+    console.log('siteAddress focused');
+});
 
 // Function to handle training course selection
 function handleGroupTrainingSelection() {
