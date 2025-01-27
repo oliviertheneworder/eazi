@@ -1,10 +1,10 @@
 // FORM LOGIC
 
-//console.log("quote.js loaded");
+console.log("quote.js loaded");
 
 const currentUrl = window.location.href;
 $("#currentUrl").val(currentUrl);
-//console.log("currentUrl =", currentUrl);
+console.log("currentUrl =", currentUrl);
 
 // Initially hide all sections except #quoteWhat
 $('.form-section').hide();
@@ -105,6 +105,27 @@ function handleQuoteRentBuy() {
                 scrollToNextSection('quoteDates');
             }
         });
+
+        // if #chooseRental, #chooseNew, or #chooseUsed is active
+        if ($('#chooseNew').is(':checked') || $('#chooseUsed').is(':checked') || $('#chooseNewUsed').is(':checked')  ) {
+
+            $('#quoteMaxWeight input').on('change', function () {
+                $('#quoteBranch').show();
+                scrollToNextSection('quoteBranch');
+            });
+
+            $('#quoteKnow input').on('change', function () {
+                $('#quoteBranch').show();
+                scrollToNextSection('quoteBranch');
+            });
+
+        } else {
+            
+            $('#quoteMaxWeight input').on('change', function () {
+                $('#quoteBranch').show();
+                scrollToNextSection('quoteBranch');
+            });
+        }
 
     } else if (selectedNeed === 'helpMeChoose') {
         // Show sections sequentially based on input changes
