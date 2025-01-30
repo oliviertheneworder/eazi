@@ -1,10 +1,10 @@
 // FORM LOGIC
 
-console.log("quote.js loaded");
+// console.log("quote.js loaded");
 
 const currentUrl = window.location.href;
 $("#currentUrl").val(currentUrl);
-console.log("currentUrl =", currentUrl);
+// console.log("currentUrl =", currentUrl);
 
 // Initially hide all sections except #quoteWhat
 $('.form-section').hide();
@@ -24,20 +24,6 @@ $('#Machine-Name, #partsServiceRequirements, #trainingCourses').on('input change
         $('#quoteBranch').hide(); // Hide the #quoteBranch section if no values
     }
 });
-
-// Function to toggle required attributes and clear hidden inputs
-// function toggleRequiredAttributes() {
-//     $('.form-section').each(function () {
-//         if ($(this).is(':visible')) {
-//             $(this).find('input, textarea, select').attr('required', true);
-//         } else {
-//             // Remove required attribute and clear values for hidden sections
-//             $(this).find('input, textarea, select').removeAttr('required').val('');
-//             $(this).find('input[type="radio"], input[type="checkbox"]').prop('checked', false);
-//             $(this).find('select').prop('selectedIndex', 0);
-//         }
-//     });
-// }
 
 // Function to scroll to the next section using GSAP
 function scrollToNextSection(sectionId) {
@@ -83,8 +69,6 @@ function handleQuoteWhat() {
         default:
             break;
     }
-
-    //toggleRequiredAttributes();
 }
 
 // Function to handle the "Do you know what you need?" section
@@ -169,9 +153,6 @@ function handleQuoteRentBuy() {
             });
         }
     }
-
-    // Ensure required attributes are toggled correctly
-    //toggleRequiredAttributes();
 }
 
 $('#siteAddress').on('focus', function () {
@@ -188,8 +169,6 @@ function handleGroupTrainingSelection() {
     } else {
         $('#quoteBranch, #quoteDetails, #quoteSubmit').hide();
     }
-
-    //toggleRequiredAttributes();
 }
 
 // Function to handle final steps
@@ -210,8 +189,6 @@ function handleFinalSteps() {
     } else {
         $('#quoteSubmit').hide();
     }
-
-    //toggleRequiredAttributes();
 }
 
 // Function to validate required fields in a specific section
@@ -232,10 +209,6 @@ $('input[name="what-you-need"]').on('change', handleQuoteRentBuy);
 $('input[name="groupTraining"]').on('change', handleGroupTrainingSelection);
 $('#quoteBranch input, #quoteBranch select, #quoteBranch textarea').on('change keyup', handleFinalSteps);
 $('#quoteDetails input, #quoteDetails select, #quoteDetails textarea').on('change keyup', handleFinalSteps);
-
-// Initial setup
-//toggleRequiredAttributes();
-
 
 // QUOTE MODAL GSAP
 

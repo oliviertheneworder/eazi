@@ -9,4 +9,5 @@ import './language.js';
 import './siteSpeed.js';
 
 // Optional: Add shared initialisation or logic here
-console.log('Main JS file loaded!');
+
+// console.log('Main JS file loaded!');

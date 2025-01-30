@@ -1,6 +1,35 @@
 
 // Purpose: Handle form logic and build custom URL
 
+
+// Check if '.result-category' has text equal to any Work-At-Height categories. If so change the sibling '.key-spec-item .key-spec-label' text to 'Max Platform Capacity'. 
+// Do similar for 'Order Pickers' but change the text to 'Max Rated Capacity'.
+function updateCategoryLabels(categories, labelText) {
+    categories.forEach(category => {
+        const $categoryElement = $(`.result-category:contains('${category}')`);
+        if ($categoryElement.length) { // Check if element exists
+            const $keySpecLabel = $categoryElement.siblings('.key-spec-item').find('.key-spec-label');
+            let text = labelText;
+            const $parent = $categoryElement.parents();
+            if ($parent.find('.platform-capacity-unrestricted').is(':visible')) {
+                text += ' - Unrestricted';
+            } else if ($parent.find('.platform-capacity-restricted').is(':visible')) {
+                text += ' - Restricted';
+            }
+            $keySpecLabel.text(text);
+        }
+    });
+}
+const platformCategories = [
+    'Articulated Diesel Boom Lifts', 'Compact Crawlers', 'Diesel Scissor Lifts',
+    'Electric Boom Lifts', 'Electric Scissor Lifts', 'Mast Boom Lifts',
+    'Personnel Lifts', 'Telescopic Diesel Boom Lifts', 'Trailer Mounted Boom Lifts (Towable)'
+];
+const ratedCapacityCategories = ['Order Pickers'];
+updateCategoryLabels(platformCategories, 'Max Platform Capacity');
+updateCategoryLabels(ratedCapacityCategories, 'Max Rated Capacity');
+
+
 // Immediately Invoked Function Expression (IIFE) to encapsulate the code
 (function () {
 
