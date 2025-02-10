@@ -10,7 +10,7 @@ function updateCategoryLabels(categories, labelText) {
         if ($categoryElement.length) { // Check if element exists
             const $keySpecLabel = $categoryElement.siblings('.key-spec-item').find('.key-spec-label');
             let text = labelText;
-            const $parent = $categoryElement.parents();
+            const $parent = $categoryElement.parents(); 
             if ($parent.find('.platform-capacity-unrestricted').is(':visible')) {
                 text += ' - Unrestricted';
             } else if ($parent.find('.platform-capacity-restricted').is(':visible')) {
@@ -28,6 +28,21 @@ const platformCategories = [
 const ratedCapacityCategories = ['Order Pickers'];
 updateCategoryLabels(platformCategories, 'Max Platform Capacity');
 updateCategoryLabels(ratedCapacityCategories, 'Max Rated Capacity');
+
+
+function updateMaxLiftingHeight(categories, labelText) {
+    categories.forEach(category => {
+        const $categoryElement = $(`.result-category:contains('${category}')`);
+        if ($categoryElement.length) { // Check if element exists
+            const $keySpecLabel = $('.max-working-height').find('.key-spec-label');
+            let text = labelText;
+            $keySpecLabel.text(text);
+        }
+    });
+}
+const maxLiftingHeight = ['Telehandlers','High Capacity Telehandlers','Rotational Telehandlers','Agricultural Telehandlers'];
+updateMaxLiftingHeight(maxLiftingHeight, 'Max Lifting Height');
+
 
 
 // Immediately Invoked Function Expression (IIFE) to encapsulate the code
