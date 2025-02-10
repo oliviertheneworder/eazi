@@ -50,7 +50,8 @@ const categoryMapping = {
     "Telescopic Diesel Boom Lifts": ["working-height", "horizontal-outreach", "working-outreach", "machine-weight", "platform-capacity-unrestricted"],
     "Tow Tractors & Platform Trucks": ["power-unit", "load-capacity", "overall-width"],
     "Trailer Mounted Boom Lifts (Towable)": ["working-height", "working-outreach", "up-over-height", "machine-weight"],
-    "Very Narrow Aisle Trucks": ["power-unit", "load-capacity", "load-centre", "overall-width", "lift-hight"]
+    "Very Narrow Aisle Trucks": ["power-unit", "load-capacity", "load-centre", "overall-width", "lift-hight"],
+    "Tractor Loader Backhoes": ["drive-speed-1", "drive-speed-2", "machine-weight", "overall-width", "power-unit"]
 };
 
 // Iterate through each `.key-spec-list` that has a `data-category`
