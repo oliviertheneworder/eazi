@@ -144,26 +144,34 @@ function updateSelectedCountry(country, shortName, flagUrl) {
 
 // Function to update availability for rent or buy based on the selected country
 function updateAvailability(country) {
-    const buttonRentBuy = $(".button-rent-buy");
-    const rentData = buttonRentBuy.find("[data-rent]").attr("data-rent") || "";
-    const saleData = buttonRentBuy.find("[data-sale]").attr("data-sale") || "";
 
-    const rentCountries = rentData.split(",").map((item) => item.trim());
-    const saleCountries = saleData.split(",").map((item) => item.trim());
+    $(".button-rent-buy").each(function () {
 
-    const availableForRent = rentCountries.includes(country);
-    const availableForSale = saleCountries.includes(country);
+        const buttonRentBuy = $(this);
+        
+        const rentData = buttonRentBuy.find("[data-rent]").attr("data-rent") || "";
+        const saleData = buttonRentBuy.find("[data-sale]").attr("data-sale") || "";
 
-    if (availableForRent && availableForSale) {
-        buttonRentBuy.show().text("Available to Rent / Buy");
-    } else if (availableForRent) {
-        buttonRentBuy.show().text("Available to Rent");
-    } else if (availableForSale) {
-        buttonRentBuy.show().text("Available to Buy");
-    } else {
-        //buttonRentBuy.hide();
-        buttonRentBuy.show().text("Not Available to Rent / Buy in " + country);
-    }
+        const rentCountries = rentData.split(",").map((item) => item.trim());
+        const saleCountries = saleData.split(",").map((item) => item.trim());
+
+        const availableForRent = rentCountries.includes(country);
+        const availableForSale = saleCountries.includes(country);
+
+        if (availableForRent && availableForSale) {
+            buttonRentBuy.show().text("Available to Rent / Buy");
+        } else if (availableForRent) {
+            buttonRentBuy.show().text("Available to Rent");
+        } else if (availableForSale) {
+            buttonRentBuy.show().text("Available to Buy");
+        } else {
+            //buttonRentBuy.hide();
+            buttonRentBuy.show().text("Not Available to Rent / Buy in " + country);
+        }
+
+        console.log(`Country: ${country}, Rent: ${availableForRent}, Sale: ${availableForSale}`);
+
+    });
 }
 
 // Initial setup: check selected country and update availability
@@ -171,8 +179,5 @@ function updateAvailability(country) {
 if (chosenCountry) {
     updateAvailability(chosenCountry);
 } else {
-    //console.log("No country selected. Rent/Buy availability cannot be determined.");
+    // console.log("No country selected. Rent/Buy availability cannot be determined.");
 }
-
-// Example usage: dynamically update availability when the country changes
-// Call updateAvailability(selectedCountry) wherever you handle country selection

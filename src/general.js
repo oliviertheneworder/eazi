@@ -88,7 +88,21 @@ $('.pdf-wrap').each(function () {
 });
 
 // if URL contains 'high-capacity-telehandlers' sort '.grid-4 .w-dyn-item' by it's '.key-spec-text' vale as a number (<div class="key-spec-item"><div class="key-spec-label">Horizontal Outreach</div><div class="key-spec-val"><div class="key-spec-text">5.10</div><div class="key-spec-text unit">m</div></div></div>)
-if (window.location.href.indexOf('high-capacity-telehandlers') > -1) {
+if (window.location.href.indexOf('telehandlers') > -1 || 
+    (window.location.href.indexOf('/machine/') > -1 && $('#machineCategory').attr('href') === 'telehandlers')) {
+    const items = $('.grid-4 .w-dyn-item');
+    items.sort(function (a, b) {
+        const aVal = parseFloat($(a).find('.rated-capacity .key-spec-text').text());
+        const bVal = parseFloat($(b).find('.rated-capacity .key-spec-text').text());
+        return bVal - aVal; // Reverse the order
+    });
+    $('.grid-4').html(items);
+    // console.log('Telehandlers sorted by Rated Capacity');
+}
+
+// if URL contains 'high-capacity-telehandlers' sort '.grid-4 .w-dyn-item' by it's '.key-spec-text' vale as a number (<div class="key-spec-item"><div class="key-spec-label">Horizontal Outreach</div><div class="key-spec-val"><div class="key-spec-text">5.10</div><div class="key-spec-text unit">m</div></div></div>)
+if (window.location.href.indexOf('high-capacity-telehandlers') > -1 || 
+    (window.location.href.indexOf('/machine/') > -1 && $('#machineCategory').attr('href') === 'high-capacity-telehandlers')) {
     const items = $('.grid-4 .w-dyn-item');
     items.sort(function (a, b) {
         const aVal = parseFloat($(a).find('.horizontal-outreach .key-spec-text').text());
@@ -100,7 +114,8 @@ if (window.location.href.indexOf('high-capacity-telehandlers') > -1) {
 }
 
 // Sort for agricultural-telehandlers key specs
-if (window.location.href.indexOf('agricultural-telehandlers') > -1) {
+if (window.location.href.indexOf('agricultural-telehandlers') > -1 || 
+    (window.location.href.indexOf('/machine/') > -1 && $('#machineCategory').attr('href') === '/category/agricultural-telehandlerss')) {
     const items = $('.grid-4 .w-dyn-item');
     items.sort(function (a, b) {
         const aVal = parseFloat($(a).find('.horizontal-outreach .key-spec-text').text());
@@ -108,21 +123,23 @@ if (window.location.href.indexOf('agricultural-telehandlers') > -1) {
         return bVal - aVal; // Reverse the order
     });
     $('.grid-4').html(items);
-    //console.log('Agricultural Telehandlers sorted by Horizontal Outreach');
+    // console.log('Agricultural Telehandlers sorted by Horizontal Outreach');
 }
 
-if (window.location.href.indexOf('rotational-telehandlers') > -1) {
+if (window.location.href.indexOf('rotational-telehandlers') > -1 || 
+    (window.location.href.indexOf('/machine/') > -1 && $('#machineCategory').attr('href') === '/category/rotational-telehandlers')) {
     const items = $('.grid-4 .w-dyn-item');
     items.sort(function (a, b) {
-        const aVal = parseFloat($(a).find('.rated-capacity .key-spec-text').text());
-        const bVal = parseFloat($(b).find('.rated-capacity .key-spec-text').text());
+        const aVal = parseFloat($(a).find('.horizontal-outreach .key-spec-text').text());
+        const bVal = parseFloat($(b).find('.horizontal-outreach .key-spec-text').text());
         return bVal - aVal; // Reverse the order
     });
     $('.grid-4').html(items);
     // console.log('Rotational Telehandlers sorted by Rated Capacity');
 }
 
-if (window.location.href.indexOf('rough-terrain-forklifts') > -1) {
+if (window.location.href.indexOf('rough-terrain-forklifts') > -1 || 
+    (window.location.href.indexOf('/machine/') > -1 && $('#machineCategory').attr('href') === '/category/rough-terrain-forklifts')) {
     const items = $('.grid-4 .w-dyn-item');
     items.sort(function (a, b) {
         const aVal = parseFloat($(a).find('.load-capacity .key-spec-text').text());
@@ -133,7 +150,8 @@ if (window.location.href.indexOf('rough-terrain-forklifts') > -1) {
     // console.log('Rotational Telehandlers sorted by Rated Capacity');
 }
 
-if (window.location.href.indexOf('skid-steer-small-platforms') > -1) {
+if (window.location.href.indexOf('skid-steer-small-platforms') > -1 || 
+    (window.location.href.indexOf('/machine/') > -1 && $('#machineCategory').attr('href') === '/category/skid-steer-small-platforms')) {
     const items = $('.grid-4 .w-dyn-item');
     items.sort(function (a, b) {
         const aVal = parseFloat($(a).find('.working-height .key-spec-text').text());
