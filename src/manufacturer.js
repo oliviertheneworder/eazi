@@ -25,13 +25,22 @@ if (window.location.pathname.includes('/manufacturer/')) {
 if (window.location.pathname.includes('/category/')) {
     const urlParams = new URLSearchParams(window.location.search);
     const manufacturerSlug = urlParams.get('manufacturer');
+    
+    // console.log('URL Search params:', window.location.search);
+    // console.log('Manufacturer slug:', manufacturerSlug);
 
     if (manufacturerSlug) {
         const manufacturerTitle = manufacturerSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
+        
+        console.log('Filtering by manufacturer:', manufacturerTitle);
+        
         document.querySelectorAll('.w-dyn-item').forEach(item => {
             const productHeading = item.querySelector('.product-heading');
-            if (productHeading && productHeading.textContent.includes(manufacturerTitle)) {
+            if (productHeading) {
+                // console.log('Product heading text:', productHeading.textContent);
+                // console.log('Includes check:', productHeading.textContent.toLowerCase().includes(manufacturerTitle.toLowerCase()));
+            }
+            if (productHeading && productHeading.textContent.toLowerCase().includes(manufacturerTitle.toLowerCase())) {
                 item.style.display = 'block';
             } else {
                 item.style.display = 'none';
