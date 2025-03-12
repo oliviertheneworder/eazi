@@ -14,7 +14,7 @@ $('.jsonbranch').each(function (index) {
     try {
         const jsonData = JSON.parse(rawText);
         if (jsonData && jsonData.branch && jsonData.name) {
-            $('#chooseBranch').append(
+            $('#chooseBranch, #careerBranch').append( // For Quote Form and Career Form
                 `<option value="${jsonData.branch}">${jsonData.name}</option>`
             );
         } else {

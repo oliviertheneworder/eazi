@@ -265,6 +265,36 @@ $('input[type="radio"]').on('change', function () {
     });
 });
 
+// Checkbox Behaviour
+$('input[type="checkbox"]').on('change', function () {
+    // Find the checkbox field container
+    const container = $(this).closest('.checkbox-field');
+    
+    // Toggle active class on the container
+    if ($(this).is(':checked')) {
+        container.addClass('active');
+    } else {
+        container.removeClass('active');
+    }
+    
+    // Find the active and inactive icons
+    const activeIcon = container.find('.field-icon-active');
+    const inactiveIcon = container.find('.field-icon');
+    
+    // Only animate if both icons exist
+    if (activeIcon.length && inactiveIcon.length) {
+        if ($(this).is(':checked')) {
+            // Animate the active icon for the selected checkbox
+            gsap.to(activeIcon, { scale: 1, opacity: 1, duration: 0.4, ease: "power3.out" });
+            gsap.to(inactiveIcon, { scale: 0, opacity: 0, duration: 0.2, ease: "power3.out" });
+        } else {
+            // Animate the inactive icon for unselected checkbox
+            gsap.to(activeIcon, { scale: 0, opacity: 0, duration: 0.2, ease: "power3.out" });
+            gsap.to(inactiveIcon, { scale: 1, opacity: 1, duration: 0.2, ease: "power3.out" });
+        }
+    }
+});
+
 // Text fields behavior
 
 // Initial setup: remove active class from all text fields and labels on page load

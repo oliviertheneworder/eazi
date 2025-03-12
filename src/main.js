@@ -8,6 +8,7 @@ import './country.js';
 import './language.js';
 import './manufacturer.js';
 import './siteSpeed.js';
+import './careers.js';
 
 // Optional: Add shared initialisation or logic here
 
