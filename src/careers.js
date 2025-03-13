@@ -36,9 +36,8 @@ $("#careerNationality").change(function () {
     $("#careerIdNumber").val($("#careerIdNumber").val().replace(/\s/g, ""));
 
     if ($(this).val() === "South Africa") {
-        $("#careerIdNumber").attr("pattern", "\\d{11}");
+        $("#careerIdNumber").attr("pattern", "\\d{13}");
         $("#careerIdNumber").attr("inputmode", "numeric");
-        $("#careerIdNumber").attr("autocomplete", "off");
     } else {
         $("#careerIdNumber").removeAttr("pattern");
     }
