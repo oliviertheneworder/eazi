@@ -22,7 +22,7 @@ $("#careerCv").change(function () {
 $("#careerId").change(function () {
     var file = this.files[0]; // Get the selected file
     if (file && file.name !== "") {
-        $("#id-file-name").text(çfile.name);
+        $("#id-file-name").text(file.name);
         $("#id-file-name").css("color", "#222");
     } else {
         $("#id-file-name").text("No file chosen");

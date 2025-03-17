@@ -1,5 +1,3 @@
-// console.log("Country.js loaded");
-
 // Locate modal and its buttons
 const modal = document.querySelector(".country-modal");
 const modalButtons = document.querySelectorAll(".button-country");
@@ -7,8 +5,6 @@ const modalButtons = document.querySelectorAll(".button-country");
 // Locate navigation dropdown
 const dropdownContainer = document.querySelector(".country-list");
 if (dropdownContainer) {
-    //console.log("Navigation dropdown found:", dropdownContainer);
-
     // Add click listener for navigation dropdown
     dropdownContainer.addEventListener("click", (event) => {
         const clickedLink = event.target.closest(".nav_dropdown_link");
@@ -67,7 +63,6 @@ if (!chosenCountry || !chosenShortName || !chosenFlagUrl) {
     updateSelectedCountry(chosenCountry, chosenShortName, chosenFlagUrl);
 }
 
-
 // Function to show the modal
 function showModal(modal) {
     if (modal) {
@@ -112,10 +107,6 @@ function getCookie(name) {
 
 // Function to handle country selection
 function selectCountry(country, shortName, flagUrl) {
-    //console.log(`Country selected: ${country}`);
-    //console.log(`Short name: ${shortName}`);
-    //console.log(`Flag URL: ${flagUrl}`);
-
     setCookie("selectedCountry", country, 365);
     setCookie("selectedCountryShort", shortName, 365);
     setCookie("selectedCountryFlag", flagUrl, 365);
@@ -128,19 +119,15 @@ function updateSelectedCountry(country, shortName, flagUrl) {
     const navFlag = document.querySelector(".flag-chosen");
     if (navShortName) {
         navShortName.textContent = shortName;
-        //console.log(`Navigation short name updated to: ${shortName}`);
     } else {
         console.error("Element with class 'short-chosen' not found.");
     }
     if (navFlag) {
         navFlag.src = flagUrl;
-        //console.log(`Navigation flag updated to: ${flagUrl}`);
     } else {
         console.error("Element with class 'flag-chosen' not found.");
     }
 }
-
-// Country Availability
 
 // Function to update availability for rent or buy based on the selected country
 function updateAvailability(country) {
@@ -175,7 +162,6 @@ function updateAvailability(country) {
 }
 
 // Initial setup: check selected country and update availability
-
 if (chosenCountry) {
     updateAvailability(chosenCountry);
 } else {
