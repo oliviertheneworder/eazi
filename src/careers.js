@@ -127,4 +127,4 @@ if ($(".more-career-section .w-dyn-items").children().length === 0) {
 }
 
 // Log when the page is loaded
-console.log("careers.js loaded");
+// console.log("careers.js loaded");

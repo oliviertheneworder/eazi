@@ -7,6 +7,9 @@ const formWrap = document.querySelector(".cookie-form-wrap");
 const saveWrap = document.querySelector(".cookie-save-wrap");
 const buttonWrap = document.querySelector(".cookie-button-wrap");
 
+const analyticsCheckbox = document.getElementById("AnalyticsCookie");
+const marketingCheckbox = document.getElementById("MarketingCookie");
+
 // Checkbox state active
 $('input[type="checkbox"]:checked').each(function(){
     var $wrap = $(this).siblings('.checkbox-radio-wrap');
@@ -82,6 +85,7 @@ function savePreferences() {
     setCookie("user_consent", JSON.stringify(consent), 365);
     applyConsentPreferences(consent);
     hideBanner();
+    console.log("Cookie saved");
 }
 
 function acceptAllCookies() {
@@ -94,6 +98,7 @@ function acceptAllCookies() {
 function hideBanner() {
     cookieBanner.style.opacity = "0";
     setTimeout(() => cookieBanner.style.display = "none", 300);
+    console.log("Banner hidden");
 }
 
 function showCustomisation() {

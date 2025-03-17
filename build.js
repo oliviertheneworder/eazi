@@ -9,7 +9,9 @@ async function build() {
         bundle: true,
         outfile: './dist/index.js', // Output file
         minify: true, // Optional: Minify for production
-        sourcemap: false, // Optional: Generate sourcemaps
+        sourcemap: true, // Optional: Generate sourcemaps
+        format: 'iife', // Immediately Invoked Function Expression for better scoping
+        target: ['es2015'], // Target modern browsers
     });
 
     if (isWatch) {

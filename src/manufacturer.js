@@ -1,4 +1,4 @@
-console.log('Manufacturer script loaded');
+// console.log('Manufacturer script loaded');
 
 // Check if we're on a manufacturer page
 if (window.location.pathname.includes('/manufacturer/')) {
