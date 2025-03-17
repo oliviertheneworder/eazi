@@ -1,3 +1,4 @@
+import './cookie-notice.js';
 import './gsap.js';
 import './general.js';
 import './quoteBranch.js';

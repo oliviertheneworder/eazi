@@ -10,7 +10,7 @@ $('#careerCV, #careerId').on('change', function() {
 $("#careerCv").change(function () {
     var file = this.files[0]; // Get the selected file
     if (file && file.name !== "") {
-        $("#cv-file-name").text("Selected file: " + file.name);
+        $("#cv-file-name").text(file.name);
         $("#cv-file-name").css("color", "#222");
     } else {
         $("#cv-file-name").text("No file chosen");
@@ -22,7 +22,7 @@ $("#careerCv").change(function () {
 $("#careerId").change(function () {
     var file = this.files[0]; // Get the selected file
     if (file && file.name !== "") {
-        $("#id-file-name").text("Selected file: " + file.name);
+        $("#id-file-name").text(çfile.name);
         $("#id-file-name").css("color", "#222");
     } else {
         $("#id-file-name").text("No file chosen");
@@ -51,8 +51,14 @@ $("#careerId").attr("required", true);
 $("#careerApplication").submit(function (e) {
     e.preventDefault(); // Prevent default Webflow form submission
 
-    // Submit input type submit text to "Submitting..."
-    $('#careerApplication input[type="submit"]').text("Submitting…");
+    // Get the submit button
+    var submitButton = $('#careerApplication input[type="submit"]');
+    
+    // Disable the button and change text to "Loading..."
+    submitButton.prop('disabled', true);
+    submitButton.val("Loading...");
+    submitButton.css('opacity', '0.7');
+    submitButton.css('cursor', 'not-allowed');
 
     // Create FormData from the form
     var formData = new FormData(this);
@@ -77,7 +83,6 @@ $("#careerApplication").submit(function (e) {
         }
     })
     .then(data => {
-
         // console.log("Form submitted successfully:", data);
         // alert("Form submitted successfully!");
 
@@ -88,7 +93,6 @@ $("#careerApplication").submit(function (e) {
         // link to #careerApplication on the page
         window.location.href = "#careerApplication";
 
-
         // Optional: Reset form after successful submission
         this.reset();
 
@@ -98,11 +102,22 @@ $("#careerApplication").submit(function (e) {
         $("#id-file-name").text("No file chosen");
         $("#id-file-name").css("color", "#f60");
 
+        // Re-enable the button and reset text (though it won't be visible as the form is hidden)
+        submitButton.prop('disabled', false);
+        submitButton.val("Submit");
+        submitButton.css('opacity', '1');
+        submitButton.css('cursor', 'pointer');
     })
     .catch(error => {
         console.error("Error:", error);
         $('.career-error').show();
         alert("Form submission failed.");
+        
+        // Re-enable the button in case of error
+        submitButton.prop('disabled', false);
+        submitButton.val("Submit");
+        submitButton.css('opacity', '1');
+        submitButton.css('cursor', 'pointer');
     });
 });
 
