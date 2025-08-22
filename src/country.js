@@ -175,7 +175,7 @@ function populateCountryDropdown(countryDropdown, dropdownContainer) {
         }
     });
     
-    console.log(`Populated dropdown with ${countryItems.length} countries`);
+    //console.log(`Populated dropdown with ${countryItems.length} countries`);
 }
 
 // Function to update navigation and dropdown with the selected country
@@ -221,7 +221,7 @@ function updateAvailability(country) {
             buttonRentBuy.show().text("Not Available to Rent / Buy in " + country);
         }
 
-        console.log(`Country: ${country}, Rent: ${availableForRent}, Sale: ${availableForSale}`);
+        //console.log(`Country: ${country}, Rent: ${availableForRent}, Sale: ${availableForSale}`);
 
     });
 }
