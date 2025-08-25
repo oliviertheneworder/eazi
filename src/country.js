@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Populate the dropdown with countries from navigation
         populateCountryDropdown(countryDropdown, dropdownContainer);
         
+        // Add click listeners for country buttons in the modal
+        addModalButtonListeners(modal, dropdownContainer);
+        
         // Add change listener for dropdown
         if (countryDropdown) {
             countryDropdown.addEventListener("change", (event) => {
@@ -176,6 +179,36 @@ function populateCountryDropdown(countryDropdown, dropdownContainer) {
     });
     
     //console.log(`Populated dropdown with ${countryItems.length} countries`);
+}
+
+// Function to add click listeners for country buttons in the modal
+function addModalButtonListeners(modal, dropdownContainer) {
+    if (!modal || !dropdownContainer) return;
+    
+    // Find all country buttons in the modal
+    const countryButtons = modal.querySelectorAll(".button-country");
+    
+    countryButtons.forEach(button => {
+        button.addEventListener("click", (event) => {
+            const countryName = button.textContent.trim();
+            
+            // Find matching country in navigation dropdown to get short name and flag
+            const matchingDropdownItem = [...dropdownContainer.querySelectorAll(".nav_dropdown_item")].find(
+                (item) => item.querySelector(".country")?.textContent.trim() === countryName
+            );
+            
+            if (matchingDropdownItem) {
+                const shortName = matchingDropdownItem.querySelector(".country-short").textContent.trim();
+                const flagUrl = matchingDropdownItem.querySelector("img").src;
+                
+                //console.log(`Modal Button Country: ${countryName}, Short Name: ${shortName}, Flag URL: ${flagUrl}`);
+                selectCountry(countryName, shortName, flagUrl);
+                hideModal(modal);
+            } else {
+                console.error(`Dropdown item for ${countryName} not found.`);
+            }
+        });
+    });
 }
 
 // Function to update navigation and dropdown with the selected country
