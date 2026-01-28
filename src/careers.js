@@ -1,34 +1,45 @@
-// Limit file size for ID and CV
-$('#careerCV, #careerId').on('change', function() {
-    if (this.files[0].size > 2 * 1024 * 1024) { // 2MB in bytes
-        alert("File size must be 2MB or smaller.");
-        this.value = ""; // Reset the input
+const MAX_CAREER_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
+
+function setFileNameDisplay($nameEl, text, isError) {
+    if (!$nameEl || !$nameEl.length) return;
+    $nameEl.text(text);
+    $nameEl.css("color", isError ? "#f60" : "#222");
+}
+
+function validateRequiredFileInput($input, $nameEl, label) {
+    if (!$input || !$input.length) return true;
+
+    const el = $input[0];
+    const file = el.files && el.files[0] ? el.files[0] : null;
+
+    if (!file) {
+        setFileNameDisplay($nameEl, `No file chosen (${label} required)`, true);
+        return false;
+    }
+
+    if (file.size > MAX_CAREER_FILE_SIZE_BYTES) {
+        setFileNameDisplay($nameEl, `${label} too large (max 2MB)`, true);
+        el.value = ""; // Reset the input
+        return false;
+    }
+
+    setFileNameDisplay($nameEl, file.name, false);
+    return true;
+}
+
+// Enforce file requirements on change (required + < 2MB)
+$("#careerCv, #careerId").on("change", function () {
+    const isCv = this.id === "careerCv";
+    const $nameEl = isCv ? $("#cv-file-name") : $("#id-file-name");
+    const label = isCv ? "CV" : "ID";
+
+    const ok = validateRequiredFileInput($(this), $nameEl, label);
+    if (!ok) {
+        alert(`${label} file is required and must be under 2MB.`);
     }
 });
 
-// CV File Upload
-$("#careerCv").change(function () {
-    var file = this.files[0]; // Get the selected file
-    if (file && file.name !== "") {
-        $("#cv-file-name").text(file.name);
-        $("#cv-file-name").css("color", "#222");
-    } else {
-        $("#cv-file-name").text("No file chosen");
-        $("#cv-file-name").css("color", "#f60");
-    }
-});
-
-// Do the same for ID File Upload
-$("#careerId").change(function () {
-    var file = this.files[0]; // Get the selected file
-    if (file && file.name !== "") {
-        $("#id-file-name").text(file.name);
-        $("#id-file-name").css("color", "#222");
-    } else {
-        $("#id-file-name").text("No file chosen");
-        $("#id-file-name").css("color", "#f60");
-    }
-});
+// Legacy file name change handlers replaced by unified validation above.
 
 // If RSA nationality, ID Number must have 11 digits and no spaces or non-numerical numbers
 $("#careerNationality").change(function () {
@@ -140,13 +151,21 @@ $("#Line-Manager-Password").on("input", function() {
     }
 });
 
-// set #careerCV and #careerId to required
-$("#careerCV").attr("required", true);
+// set #careerCv and #careerId to required
+$("#careerCv").attr("required", true);
 $("#careerId").attr("required", true);
 
 // Let Webflow handle the form submission and webhook integration
 $("#careerApplication").submit(function (e) {
     e.preventDefault(); // Prevent default Webflow form submission
+
+    // Validate required file inputs (< 2MB) before disabling submit.
+    const cvOk = validateRequiredFileInput($("#careerCv"), $("#cv-file-name"), "CV");
+    const idOk = validateRequiredFileInput($("#careerId"), $("#id-file-name"), "ID");
+    if (!cvOk || !idOk) {
+        alert("Please upload your CV and ID. Each file must be under 2MB.");
+        return;
+    }
 
     // Get the submit button
     var submitButton = $('#careerApplication input[type="submit"]');
