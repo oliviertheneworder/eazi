@@ -50,54 +50,61 @@ $("#careerEazi").change(function () {
     var managerNameInput = $("#careerManagerName");
     var managerEmailInput = $("#careerManagerEmail");
     var passwordInput = $("#Line-Manager-Password");
+
+    // Employee detail fields (shown only when "Works at Eazi" is checked)
+    var employeeNumberInput = $("#Employee-Number");
+    var dateStartedInput = $("#date-started");
+    var currentPositionInput = $("#Current-Position-Held");
+    var departmentInput = $("#Department");
+    var branchInput = $("#Branch");
+
+    function setConditionalRequired($input, required) {
+        if (!$input || !$input.length) return;
+
+        if (required) {
+            $input.attr("required", true);
+            $input.addClass("required-field");
+            if (!$input.prev("label").find(".required-asterisk").length) {
+                $input.prev("label").append('<span class="required-asterisk" style="color: red;"> *</span>');
+            }
+        } else {
+            $input.removeAttr("required");
+            $input.removeClass("required-field");
+            $input.prev("label").find(".required-asterisk").remove();
+            $input.val("");
+        }
+    }
     
     if (isChecked) {
         // Show manager section and make inputs required
         managerSection.removeClass("hide").addClass("career-section");
-        managerNameInput.attr("required", true);
-        managerEmailInput.attr("required", true);
-        passwordInput.attr("required", true);
-        
-        // Add visual indication that fields are required
-        managerNameInput.addClass("required-field");
-        managerEmailInput.addClass("required-field");
-        passwordInput.addClass("required-field");
-        
-        // Add asterisk to labels if not already present
-        if (!managerNameInput.prev("label").find(".required-asterisk").length) {
-            managerNameInput.prev("label").append('<span class="required-asterisk" style="color: red;"> *</span>');
-        }
-        if (!managerEmailInput.prev("label").find(".required-asterisk").length) {
-            managerEmailInput.prev("label").append('<span class="required-asterisk" style="color: red;"> *</span>');
-        }
-        if (!passwordInput.prev("label").find(".required-asterisk").length) {
-            passwordInput.prev("label").append('<span class="required-asterisk" style="color: red;"> *</span>');
-        }
+        setConditionalRequired(managerNameInput, true);
+        setConditionalRequired(managerEmailInput, true);
+        setConditionalRequired(passwordInput, true);
+
+        // Apply the same required/asterisk logic to employee detail fields
+        setConditionalRequired(employeeNumberInput, true);
+        setConditionalRequired(dateStartedInput, true);
+        setConditionalRequired(currentPositionInput, true);
+        setConditionalRequired(departmentInput, true);
+        setConditionalRequired(branchInput, true);
     } else {
         // Hide manager section and remove required attributes
         managerSection.removeClass("career-section").addClass("hide");
-        managerNameInput.removeAttr("required");
-        managerEmailInput.removeAttr("required");
-        passwordInput.removeAttr("required");
-        
-        // Remove visual indication
-        managerNameInput.removeClass("required-field");
-        managerEmailInput.removeClass("required-field");
-        passwordInput.removeClass("required-field");
-        
-        // Remove asterisk from labels
-        managerNameInput.prev("label").find(".required-asterisk").remove();
-        managerEmailInput.prev("label").find(".required-asterisk").remove();
-        passwordInput.prev("label").find(".required-asterisk").remove();
-        
-        // Clear the input values when hiding
-        managerNameInput.val("");
-        managerEmailInput.val("");
-        passwordInput.val("");
+        setConditionalRequired(managerNameInput, false);
+        setConditionalRequired(managerEmailInput, false);
+        setConditionalRequired(passwordInput, false);
+
+        // Reset employee detail fields when hiding
+        setConditionalRequired(employeeNumberInput, false);
+        setConditionalRequired(dateStartedInput, false);
+        setConditionalRequired(currentPositionInput, false);
+        setConditionalRequired(departmentInput, false);
+        setConditionalRequired(branchInput, false);
         
         // Remove any password validation messages
-        passwordInput.removeClass("password-error");
-        $(".password-error-message").remove();
+        passwordInput.removeClass("password-error password-success");
+        $(".password-error-message, .password-success-message").remove();
     }
 });
 
@@ -162,10 +169,26 @@ $("#careerApplication").submit(function (e) {
         var managerName = $("#careerManagerName").val();
         var managerEmail = $("#careerManagerEmail").val();
         var password = $("#Line-Manager-Password").val();
+
+        // Validate employee details
+        var employeeNumber = $("#Employee-Number").val();
+        var dateStarted = $("#date-started").val();
+        var currentPosition = $("#Current-Position-Held").val();
+        var department = $("#Department").val();
+        var branch = $("#Branch").val();
         
         // Validate manager details if required
         if (!managerName || !managerEmail || !password) {
             alert("Please fill in your Line Manager's details and password.");
+            submitButton.prop('disabled', false);
+            submitButton.val("Submit");
+            submitButton.css('opacity', '1');
+            submitButton.css('cursor', 'pointer');
+            return;
+        }
+
+        if (!employeeNumber || !dateStarted || !currentPosition || !department || !branch) {
+            alert("Please complete your employee details (Employee Number, Date Started, Current Position, Department, and Branch).");
             submitButton.prop('disabled', false);
             submitButton.val("Submit");
             submitButton.css('opacity', '1');
@@ -240,6 +263,15 @@ $("#careerApplication").submit(function (e) {
         $("#Line-Manager-Password").prev("label").find(".required-asterisk").remove();
         $(".password-error-message, .password-success-message").remove();
 
+        // Reset employee detail fields state
+        $("#Employee-Number, #date-started, #Current-Position-Held, #Department, #Branch")
+            .removeAttr("required")
+            .removeClass("required-field")
+            .val("")
+            .each(function () {
+                $(this).prev("label").find(".required-asterisk").remove();
+            });
+
         // Re-enable the button and reset text (though it won't be visible as the form is hidden)
         submitButton.prop('disabled', false);
         submitButton.val("Submit");
@@ -263,6 +295,9 @@ $("#careerApplication").submit(function (e) {
 if ($(".more-career-section .w-dyn-items").children().length === 0) {
     $(".more-career-section").hide();
 }
+
+// Ensure the "Works at Eazi" state is applied on load
+$("#careerEazi").trigger("change");
 
 // Log when the page is loaded
 // console.log("careers.js loaded");
