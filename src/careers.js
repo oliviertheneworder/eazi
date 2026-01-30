@@ -54,9 +54,50 @@ $("#careerNationality").change(function () {
     }
 });
 
-// Handle "Works at Eazi" checkbox functionality
-$("#careerEazi").change(function () {
-    var isChecked = $(this).is(":checked");
+function getWorksAtEaziValue() {
+    // Preferred: Yes/No radio group for "Are you employed by Eazi Access?"
+    const $employeeStatus = $('input[name="employee-status"]');
+    if ($employeeStatus.length) {
+        const v = $employeeStatus.filter(":checked").val();
+        if (v) return String(v);
+    }
+
+    // Alternative: radio group named exactly like the webhook expects
+    const $worksAtEaziRadios = $('input[name="Works-at-Eazi"]');
+    if ($worksAtEaziRadios.length) {
+        const v = $worksAtEaziRadios.filter(":checked").val();
+        if (v) return String(v);
+    }
+
+    // Backwards compatibility: legacy checkbox
+    const $careerEazi = $("#careerEazi");
+    if ($careerEazi.length) return $careerEazi.is(":checked") ? "Yes" : "No";
+
+    return "No";
+}
+
+function isWorksAtEaziYes() {
+    return getWorksAtEaziValue().trim().toLowerCase() === "yes";
+}
+
+function setConditionalRequired($input, required) {
+    if (!$input || !$input.length) return;
+
+    // Remove any previously injected required indicators ("*")
+    $input.prev("label").find(".required-asterisk").remove();
+
+    if (required) {
+        $input.attr("required", true);
+        $input.addClass("required-field");
+    } else {
+        $input.removeAttr("required");
+        $input.removeClass("required-field");
+        $input.val("");
+    }
+}
+
+function applyWorksAtEaziState() {
+    var isChecked = isWorksAtEaziYes();
     var managerSection = $("#careerManagerSection");
     var managerNameInput = $("#careerManagerName");
     var managerEmailInput = $("#careerManagerEmail");
@@ -69,23 +110,6 @@ $("#careerEazi").change(function () {
     var departmentInput = $("#Department");
     var branchInput = $("#Branch");
 
-    function setConditionalRequired($input, required) {
-        if (!$input || !$input.length) return;
-
-        if (required) {
-            $input.attr("required", true);
-            $input.addClass("required-field");
-            if (!$input.prev("label").find(".required-asterisk").length) {
-                $input.prev("label").append('<span class="required-asterisk" style="color: red;"> *</span>');
-            }
-        } else {
-            $input.removeAttr("required");
-            $input.removeClass("required-field");
-            $input.prev("label").find(".required-asterisk").remove();
-            $input.val("");
-        }
-    }
-    
     if (isChecked) {
         // Show manager section and make inputs required
         managerSection.removeClass("hide").addClass("career-section");
@@ -112,12 +136,19 @@ $("#careerEazi").change(function () {
         setConditionalRequired(currentPositionInput, false);
         setConditionalRequired(departmentInput, false);
         setConditionalRequired(branchInput, false);
-        
+
         // Remove any password validation messages
         passwordInput.removeClass("password-error password-success");
         $(".password-error-message, .password-success-message").remove();
     }
-});
+}
+
+// Handle "Works at Eazi" Yes/No radio (or legacy checkbox)
+$(document).on(
+    "change",
+    '#careerEazi, input[name="employee-status"], input[name="Works-at-Eazi"]',
+    applyWorksAtEaziState
+);
 
 // Password validation function
 function validatePassword(password) {
@@ -127,7 +158,7 @@ function validatePassword(password) {
 // Add password validation on input
 $("#Line-Manager-Password").on("input", function() {
     var password = $(this).val();
-    var isChecked = $("#careerEazi").is(":checked");
+    var isChecked = isWorksAtEaziYes();
     
     if (isChecked && password.length > 0) {
         if (validatePassword(password)) {
@@ -180,11 +211,16 @@ $("#careerApplication").submit(function (e) {
     var formData = new FormData(this);
     
     // Add the "Works at Eazi" status to the form data
-    var worksAtEazi = $("#careerEazi").is(":checked") ? "Yes" : "No";
-    formData.append("Works-at-Eazi", worksAtEazi);
+    var worksAtEazi = getWorksAtEaziValue();
+    if (typeof formData.set === "function") {
+        formData.set("Works-at-Eazi", worksAtEazi);
+    } else {
+        formData.delete("Works-at-Eazi");
+        formData.append("Works-at-Eazi", worksAtEazi);
+    }
     
     // If "Works at Eazi" is checked, ensure manager details are included
-    if ($("#careerEazi").is(":checked")) {
+    if (isWorksAtEaziYes()) {
         var managerName = $("#careerManagerName").val();
         var managerEmail = $("#careerManagerEmail").val();
         var password = $("#Line-Manager-Password").val();
@@ -316,7 +352,7 @@ if ($(".more-career-section .w-dyn-items").children().length === 0) {
 }
 
 // Ensure the "Works at Eazi" state is applied on load
-$("#careerEazi").trigger("change");
+applyWorksAtEaziState();
 
 // Log when the page is loaded
 // console.log("careers.js loaded");
